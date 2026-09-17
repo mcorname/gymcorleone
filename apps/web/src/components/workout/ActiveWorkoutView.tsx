@@ -15,7 +15,8 @@ import {
   Sparkles,
   Search,
   X,
-  ChevronDown
+  ChevronDown,
+  Loader2
 } from 'lucide-react';
 import type { 
   WorkoutSession, 
@@ -72,6 +73,7 @@ export function ActiveWorkoutView({
   const [searchQuery, setSearchQuery] = useState('');
   const [activePRAlert, setActivePRAlert] = useState<string | null>(null);
   const [finishModalOpen, setFinishModalOpen] = useState(false);
+  const [isFinishing, setIsFinishing] = useState(false);
 
   // Inicializar catálogo y temporizador de sesión
   useEffect(() => {
@@ -258,19 +260,26 @@ export function ActiveWorkoutView({
     setSearchQuery('');
   };
 
-  // Finalizar sesión y guardar en historial
+  // Finalizar sesión y guardar en historial con prevención de doble envío
   const handleFinishWorkout = () => {
-    const completedSession: WorkoutSession = {
-      ...session,
-      completedAt: new Date().toISOString(),
-      durationSeconds: elapsedSeconds,
-      status: 'completed',
-      totalVolumeKg: calculateSessionVolume(session)
-    };
+    if (isFinishing) return;
+    setIsFinishing(true);
+    try {
+      const completedSession: WorkoutSession = {
+        ...session,
+        completedAt: new Date().toISOString(),
+        durationSeconds: elapsedSeconds,
+        status: 'completed',
+        totalVolumeKg: calculateSessionVolume(session)
+      };
 
-    AppStorage.addCompletedWorkout(completedSession);
-    AppStorage.setActiveSession(null);
-    onFinish();
+      AppStorage.addCompletedWorkout(completedSession);
+      AppStorage.setActiveSession(null);
+      onFinish();
+    } catch (err) {
+      console.error('Error al guardar entrenamiento:', err);
+      setIsFinishing(false);
+    }
   };
 
   const filteredExercises = exerciseCatalog.filter(ex => {
@@ -506,6 +515,7 @@ export function ActiveWorkoutView({
                             {/* RIR (Repeticiones en Reserva) */}
                             <td className="py-2.5 px-1 text-center">
                               <select
+                                aria-label={`RIR para serie ${set.setNumber} de ${getExerciseDisplayName(exItem.exercise, 'es')}`}
                                 value={set.rir ?? 2}
                                 onChange={(e) => handleUpdateSet(exIdx, sIdx, 'rir', e.target.value)}
                                 className="px-1 py-1 border border-gray-200 rounded text-xs bg-white"
@@ -677,9 +687,17 @@ export function ActiveWorkoutView({
               </button>
               <button
                 onClick={handleFinishWorkout}
-                className="flex-1 py-2.5 rounded-lg bg-[#107C41] hover:bg-[#0e6837] text-white text-xs font-bold shadow-sm transition-colors"
+                disabled={isFinishing}
+                className="flex-1 py-2.5 rounded-lg bg-[#107C41] hover:bg-[#0e6837] disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-bold shadow-sm transition-colors flex items-center justify-center gap-1.5"
               >
-                Guardar y Salir
+                {isFinishing ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Guardando...</span>
+                  </>
+                ) : (
+                  <span>Guardar y Salir</span>
+                )}
               </button>
             </div>
           </div>

@@ -47,6 +47,18 @@ export function ExerciseCatalogView({ onSelectExerciseForWorkout }: ExerciseCata
       .catch(() => setLoading(false));
   }, []);
 
+  // Soporte de accesibilidad: Cerrar modal con tecla Escape
+  useEffect(() => {
+    if (!activeExerciseDetail) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setActiveExerciseDetail(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeExerciseDetail]);
+
   // Filtro memoizado de alto rendimiento con búsqueda bilingüe y normalización diacrítica
   const filtered = useMemo(() => {
     return exercises.filter(ex => {
@@ -245,8 +257,14 @@ export function ExerciseCatalogView({ onSelectExerciseForWorkout }: ExerciseCata
 
       {/* Modal de Detalle del Ejercicio con Pasos en Español */}
       {activeExerciseDetail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4 animate-fade-in">
-          <div className="w-full max-w-xl bg-white rounded-2xl p-6 shadow-modal max-h-[90vh] flex flex-col overflow-y-auto">
+        <div
+          onClick={() => setActiveExerciseDetail(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4 animate-fade-in"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-xl bg-white rounded-2xl p-6 shadow-modal max-h-[90vh] flex flex-col overflow-y-auto"
+          >
             <div className="flex items-start justify-between pb-3 border-b border-gray-100">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-brand-blue">

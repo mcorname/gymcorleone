@@ -9,10 +9,13 @@
   "scripts": {
     "dev": "npm --workspace=@gym/web run dev",
     "build": "npm --workspace=@gym/web run build",
-    "test": "npm --workspace=@gym/i18n run test",
+    "test": "npm run test --workspaces --if-present",
     "import-exercises": "node scripts/import-exercises/import.js"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
+    "axe-core": "^4.13.0",
     "tsx": "^4.23.13",
     "typescript": "^5.4.5"
   }

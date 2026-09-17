@@ -1,10 +1,10 @@
-﻿const {
+const {
   calculateEpley1RM,
   calculateSetVolume,
   calculateBMI,
   evaluatePersonalRecord,
   evaluateProgressiveOverload
-} = require('./packages/calculations/src/index.ts');
+} = require('../src/index.ts');
 
 let passed = 0;
 let failed = 0;

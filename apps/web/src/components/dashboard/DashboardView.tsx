@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { 
@@ -121,7 +121,7 @@ export function DashboardView({ onStartWorkout, onNavigate }: DashboardViewProps
             <Scale className="w-4 h-4 text-brand-blue" />
           </div>
           <div className="text-2xl font-black text-brand-darkBlue tabular-data">
-            {latestWeight} <span className="text-xs font-normal text-gray-400">kg</span>
+            {latestWeight} <span className="text-xs font-normal text-gray-600">kg</span>
           </div>
           <div className="text-[10px] text-[#107C41] font-bold mt-1">
             -1.4 kg este mes
@@ -135,7 +135,7 @@ export function DashboardView({ onStartWorkout, onNavigate }: DashboardViewProps
             <Calendar className="w-4 h-4 text-[#107C41]" />
           </div>
           <div className="text-2xl font-black text-brand-darkBlue tabular-data">
-            {weeklyWorkoutsCount} <span className="text-xs font-normal text-gray-400">/ 5 días</span>
+            {weeklyWorkoutsCount} <span className="text-xs font-normal text-gray-600">/ 5 días</span>
           </div>
           <div className="text-[10px] text-[#107C41] font-bold mt-1">
             80% del objetivo completado
@@ -149,7 +149,7 @@ export function DashboardView({ onStartWorkout, onNavigate }: DashboardViewProps
             <Dumbbell className="w-4 h-4 text-brand-blue" />
           </div>
           <div className="text-2xl font-black text-brand-darkBlue tabular-data">
-            {(weeklyVolume / 1000).toFixed(1)}k <span className="text-xs font-normal text-gray-400">kg</span>
+            {(weeklyVolume / 1000).toFixed(1)}k <span className="text-xs font-normal text-gray-600">kg</span>
           </div>
           <div className="text-[10px] text-[#107C41] font-bold mt-1">
             +5.2% vs semana anterior
@@ -160,12 +160,12 @@ export function DashboardView({ onStartWorkout, onNavigate }: DashboardViewProps
         <div className="bg-white p-4 rounded-xl border border-brand-border shadow-subtle">
           <div className="flex items-center justify-between text-gray-500 mb-1">
             <span className="text-xs font-semibold">Racha Activa</span>
-            <Flame className="w-4 h-4 text-[#D83B01]" />
+            <Flame className="w-4 h-4 text-[#C43100]" />
           </div>
           <div className="text-2xl font-black text-brand-darkBlue tabular-data">
-            {currentStreak} <span className="text-xs font-normal text-gray-400">días</span>
+            {currentStreak} <span className="text-xs font-normal text-gray-600">días</span>
           </div>
-          <div className="text-[10px] text-[#D83B01] font-bold mt-1">
+          <div className="text-[10px] text-[#C43100] font-bold mt-1">
             ¡Constancia impecable!
           </div>
         </div>
@@ -207,6 +207,7 @@ export function DashboardView({ onStartWorkout, onNavigate }: DashboardViewProps
           <div className="flex items-center gap-2">
             {/* Selector de métrica */}
             <select
+              aria-label="Métrica de progreso a visualizar"
               value={progressMetric}
               onChange={(e) => setProgressMetric(e.target.value as any)}
               className="px-2.5 py-1 text-xs border border-gray-200 rounded-md font-medium text-brand-darkBlue bg-white outline-none"
@@ -258,7 +259,7 @@ export function DashboardView({ onStartWorkout, onNavigate }: DashboardViewProps
             </div>
           ))}
         </div>
-        <div className="flex items-center justify-between text-[11px] text-gray-400 pt-2">
+        <div className="flex items-center justify-between text-[11px] text-gray-600 pt-2">
           <span>Sobrecarga progresiva: Tendencia alcista continua</span>
           <span className="font-bold text-brand-darkBlue">Promedio: 8,987 kg / sesión</span>
         </div>

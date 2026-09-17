@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { Clock, Plus, Minus, X, Volume2 } from 'lucide-react';
@@ -47,6 +47,18 @@ export function RestTimerModal({
     return () => clearInterval(timer);
   }, [isOpen, isRunning, timeLeft, onTimerComplete]);
 
+  // Soporte de accesibilidad: Cierre con tecla Escape
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const minutes = Math.floor(timeLeft / 60);
@@ -69,8 +81,14 @@ export function RestTimerModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-xs p-0 sm:p-4 animate-fade-in">
-      <div className="w-full max-w-lg bg-white rounded-t-2xl sm:rounded-2xl p-5 border border-brand-border shadow-modal animate-slide-up">
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-xs p-0 sm:p-4 animate-fade-in"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-lg bg-white rounded-t-2xl sm:rounded-2xl p-5 border border-brand-border shadow-modal animate-slide-up"
+      >
         {/* Cabecera del Bottom Sheet */}
         <div className="flex items-center justify-between pb-3 border-b border-gray-100">
           <div className="flex items-center gap-2 text-brand-darkBlue font-bold text-sm">

@@ -1,0 +1,362 @@
+{
+  "timestamp": "2026-09-17T22:27:24.475Z",
+  "environments": {
+    "prod": "https://gymcorleone-web.vercel.app/",
+    "local": "http://localhost:3000/"
+  },
+  "networkHeaders": {
+    "access-control-allow-origin": "*",
+    "age": "8091",
+    "cache-control": "public, max-age=0, must-revalidate",
+    "content-disposition": "inline",
+    "content-encoding": "br",
+    "content-type": "text/html; charset=utf-8",
+    "date": "Thu, 17 Sep 2026 22:27:24 GMT",
+    "etag": "W/\"586903c38d6ae8dfd89834bb2dc561ab\"",
+    "server": "Vercel",
+    "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+    "vary": "RSC, Next-Router-State-Tree, Next-Router-Prefetch",
+    "x-matched-path": "/",
+    "x-vercel-cache": "HIT",
+    "x-vercel-id": "gru1::vfk7s-1789684044861-3e114f73b2a4"
+  },
+  "consoleLogs": [],
+  "networkErrors": [],
+  "accessibility": {
+    "dashboard": {
+      "violationsCount": 1,
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright",
+          "nodesCount": 1,
+          "targets": [
+            [
+              ".text-\\[\\#D83B01\\] > span"
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  "functionalTests": [
+    {
+      "id": "FN-01",
+      "module": "Dashboard",
+      "action": "Carga inicial del Dashboard y saludo personalizado",
+      "expected": "Título y saludo visibles",
+      "real": "Title: \"GYM PROGRESS — Tu Asistente Inteligente de Entrenamiento\", Saludo: true",
+      "status": "PASS",
+      "evidence": ""
+    },
+    {
+      "id": "FN-02",
+      "module": "Dashboard",
+      "action": "Alternar mapa muscular a vista Posterior",
+      "expected": "Músculos posteriores visibles",
+      "real": "Espalda visible: true",
+      "status": "PASS",
+      "evidence": ""
+    },
+    {
+      "id": "FN-03",
+      "module": "Workout",
+      "action": "Iniciar sesión desde el hero button del Dashboard",
+      "expected": "Pantalla de entrenamiento activa con ejercicios cargados",
+      "real": "Visible: true",
+      "status": "PASS",
+      "evidence": "02-active-workout.png"
+    },
+    {
+      "id": "FN-04",
+      "module": "Workout",
+      "action": "Completar serie y disparar temporizador de descanso automático",
+      "expected": "Serie marcada en verde y temporizador sugerido/abierto",
+      "real": "Modal descanso: true",
+      "status": "PASS",
+      "evidence": ""
+    },
+    {
+      "id": "FN-05",
+      "module": "Workout",
+      "action": "Agregar serie dinámica al ejercicio",
+      "expected": "Nueva serie creada con números ordenados",
+      "real": "Serie añadida correctamente",
+      "status": "PASS",
+      "evidence": ""
+    },
+    {
+      "id": "FN-06",
+      "module": "Workout Picker",
+      "action": "Búsqueda bilingüe con \"press banca\" en selector de ejercicios",
+      "expected": "Resultados en español relevantes",
+      "real": "Encontrados: 34",
+      "status": "PASS",
+      "evidence": ""
+    },
+    {
+      "id": "FN-07",
+      "module": "Workout",
+      "action": "Modal de finalización y resumen de sesión",
+      "expected": "Modal con resumen de tiempo, volumen y series",
+      "real": "Modal visible: true",
+      "status": "PASS",
+      "evidence": ""
+    },
+    {
+      "id": "FN-08",
+      "module": "Workout History",
+      "action": "Persistencia al guardar entrenamiento en almacenamiento local",
+      "expected": "Regreso a Dashboard con sesión guardada",
+      "real": "Sesión guardada y redirigido a Dashboard",
+      "status": "PASS",
+      "evidence": ""
+    },
+    {
+      "id": "FN-09",
+      "module": "Catalog",
+      "action": "Navegación al catálogo completo de ejercicios",
+      "expected": "Biblioteca visible con 1,324 ejercicios",
+      "real": "Visible: true",
+      "status": "PASS",
+      "evidence": "03-exercise-catalog.png"
+    },
+    {
+      "id": "FN-10",
+      "module": "Catalog Filters",
+      "action": "Filtrar catálogo por grupo muscular \"Pecho\"",
+      "expected": "Solo ejercicios de pecho desplegados",
+      "real": "Coincidencias encontradas: true",
+      "status": "PASS",
+      "evidence": ""
+    },
+    {
+      "id": "FN-11",
+      "module": "Catalog Modal",
+      "action": "Inspección de detalle técnico con instrucciones biomecánicas en español",
+      "expected": "Instrucciones paso a paso visibles en español",
+      "real": "Pasos visibles: true",
+      "status": "PASS",
+      "evidence": "04-exercise-modal-spanish.png"
+    },
+    {
+      "id": "FN-12",
+      "module": "AI Scanner",
+      "action": "Navegación al módulo de Visión Artificial de Máquinas",
+      "expected": "Pantalla de escáner visible",
+      "real": "Visible: true",
+      "status": "PASS",
+      "evidence": "05-machine-scanner.png"
+    },
+    {
+      "id": "FN-13",
+      "module": "AI Scanner Detection",
+      "action": "Detección, confianza y guía biomecánica de regulación",
+      "expected": "Resultado con ajuste ergonómico y músculos agonistas",
+      "real": "Resultado visible: true, Guía: true",
+      "status": "PASS",
+      "evidence": "06-scanner-result.png"
+    },
+    {
+      "id": "FN-14",
+      "module": "AI Scanner to Gym",
+      "action": "Guardar máquina identificada en el inventario de Mi Gimnasio",
+      "expected": "Toast de confirmación visible",
+      "real": "Toast: true",
+      "status": "PASS",
+      "evidence": ""
+    },
+    {
+      "id": "FN-15",
+      "module": "My Gym",
+      "action": "Visualización del inventario de máquinas del gimnasio activo",
+      "expected": "Gimnasio activo con inventario filtrable",
+      "real": "Visible: true",
+      "status": "PASS",
+      "evidence": "07-my-gym.png"
+    },
+    {
+      "id": "FN-16",
+      "module": "Routines",
+      "action": "Visualización de rutinas oficiales y personalizadas",
+      "expected": "Rutinas PPL y Torso/Pierna cargadas",
+      "real": "Visible: true",
+      "status": "PASS",
+      "evidence": "08-routines.png"
+    },
+    {
+      "id": "FN-17",
+      "module": "Routines Duplication",
+      "action": "Duplicar plantilla de rutina para personalización",
+      "expected": "Nueva rutina con sufijo (Copia) creada",
+      "real": "Copia creada: true",
+      "status": "PASS",
+      "evidence": ""
+    },
+    {
+      "id": "FN-18",
+      "module": "Progress",
+      "action": "Navegación al módulo de medidas y composición corporal",
+      "expected": "Pantalla de evolución corporal cargada",
+      "real": "Visible: true",
+      "status": "PASS",
+      "evidence": "09-progress.png"
+    },
+    {
+      "id": "FN-19",
+      "module": "Progress Slider",
+      "action": "Interacción con el control deslizante Antes vs Después",
+      "expected": "Slider interactivo funcional",
+      "real": "Existe: true",
+      "status": "PASS",
+      "evidence": ""
+    },
+    {
+      "id": "FN-20",
+      "module": "Personal Records",
+      "action": "Consulta de récords personales vigentes (1RM y Peso Máximo)",
+      "expected": "Lista de marcas históricas visibles",
+      "real": "Visible: true",
+      "status": "PASS",
+      "evidence": ""
+    }
+  ],
+  "responsiveTests": [
+    {
+      "name": "iphone-se-1",
+      "width": 320,
+      "height": 568,
+      "horizontalOverflow": false,
+      "mobileNavVisible": true,
+      "status": "PASS"
+    },
+    {
+      "name": "android-small",
+      "width": 360,
+      "height": 800,
+      "horizontalOverflow": false,
+      "mobileNavVisible": true,
+      "status": "PASS"
+    },
+    {
+      "name": "iphone-8",
+      "width": 375,
+      "height": 667,
+      "horizontalOverflow": false,
+      "mobileNavVisible": true,
+      "status": "PASS"
+    },
+    {
+      "name": "iphone-12-14",
+      "width": 390,
+      "height": 844,
+      "horizontalOverflow": false,
+      "mobileNavVisible": true,
+      "status": "PASS"
+    },
+    {
+      "name": "pixel-7",
+      "width": 412,
+      "height": 915,
+      "horizontalOverflow": false,
+      "mobileNavVisible": true,
+      "status": "PASS"
+    },
+    {
+      "name": "iphone-14-pro-max",
+      "width": 430,
+      "height": 932,
+      "horizontalOverflow": false,
+      "mobileNavVisible": true,
+      "status": "PASS"
+    },
+    {
+      "name": "ipad-portrait",
+      "width": 768,
+      "height": 1024,
+      "horizontalOverflow": false,
+      "mobileNavVisible": true,
+      "status": "PASS"
+    },
+    {
+      "name": "ipad-air",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "mobileNavVisible": true,
+      "status": "PASS"
+    },
+    {
+      "name": "tablet-landscape",
+      "width": 1024,
+      "height": 768,
+      "horizontalOverflow": false,
+      "mobileNavVisible": false,
+      "status": "PASS"
+    },
+    {
+      "name": "laptop-hd",
+      "width": 1280,
+      "height": 720,
+      "horizontalOverflow": false,
+      "mobileNavVisible": false,
+      "status": "PASS"
+    },
+    {
+      "name": "laptop-standard",
+      "width": 1366,
+      "height": 768,
+      "horizontalOverflow": false,
+      "mobileNavVisible": false,
+      "status": "PASS"
+    },
+    {
+      "name": "macbook-13",
+      "width": 1440,
+      "height": 900,
+      "horizontalOverflow": false,
+      "mobileNavVisible": false,
+      "status": "PASS"
+    },
+    {
+      "name": "desktop-fhd",
+      "width": 1920,
+      "height": 1080,
+      "horizontalOverflow": false,
+      "mobileNavVisible": false,
+      "status": "PASS"
+    }
+  ],
+  "calculationsTests": [
+    {
+      "test": "1RM 100kg x 1 rep",
+      "expected": 100,
+      "got": 100,
+      "pass": true
+    },
+    {
+      "test": "1RM 100kg x 10 reps",
+      "expected": 133.33,
+      "got": 133.33,
+      "pass": true
+    },
+    {
+      "test": "1RM 70kg x 8 reps",
+      "expected": 88.67,
+      "got": 88.67,
+      "pass": true
+    }
+  ],
+  "performanceMetrics": {},
+  "securityHeadersCheck": {
+    "content-security-policy": false,
+    "strict-transport-security": true,
+    "x-content-type-options": false,
+    "x-frame-options": false,
+    "referrer-policy": false,
+    "permissions-policy": false
+  }
+}
