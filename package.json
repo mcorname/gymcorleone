@@ -7,8 +7,8 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm --workspace=apps/web run dev",
-    "build": "npm --workspace=apps/web run build",
+    "dev": "npm --workspace=@gym/web run dev",
+    "build": "npm --workspace=@gym/web run build",
     "test": "npm --workspace=@gym/i18n run test",
     "import-exercises": "node scripts/import-exercises/import.js"
   },
