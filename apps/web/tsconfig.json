@@ -37,6 +37,9 @@
       ],
       "@gym/offline-sync": [
         "../../packages/offline-sync/src"
+      ],
+      "@gym/i18n": [
+        "../../packages/i18n/src"
       ]
     }
   },

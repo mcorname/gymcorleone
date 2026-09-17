@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { 
@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import type { Machine, AIScanResult, Exercise } from '@gym/types';
 import { CANONICAL_MACHINES, scanGymMachine, findCompatibleExercises } from '@gym/ai';
+import { getExerciseDisplayName, getLocalizedTaxonomy } from '@gym/i18n';
 import { AppStorage } from '../../lib/storage';
 
 interface MachineScannerViewProps {
@@ -368,17 +369,17 @@ export function MachineScannerView({
                     {ex.image && (
                       <img
                         src={ex.image}
-                        alt={ex.nameEs || ex.name}
+                        alt={getExerciseDisplayName(ex, 'es')}
                         className="w-11 h-11 rounded-md object-cover bg-gray-50 border border-gray-200"
                         onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
                       />
                     )}
                     <div>
                       <div className="text-xs font-bold text-brand-textPrimary">
-                        {ex.nameEs || ex.name}
+                        {getExerciseDisplayName(ex, 'es')}
                       </div>
                       <div className="text-[11px] text-brand-textSecondary mt-0.5 capitalize">
-                        {ex.targetEs || ex.target} • {ex.equipmentEs || ex.equipment}
+                        {getLocalizedTaxonomy('targets', ex.target, 'es')} • {getLocalizedTaxonomy('equipments', ex.equipment, 'es')}
                       </div>
                     </div>
                   </div>
@@ -387,7 +388,7 @@ export function MachineScannerView({
                     onClick={() => {
                       if (onAddExerciseToActiveWorkout) {
                         onAddExerciseToActiveWorkout(ex);
-                        alert(`¡"${ex.nameEs || ex.name}" agregado a tu entrenamiento activo!`);
+                        alert(`¡"${getExerciseDisplayName(ex, 'es')}" agregado a tu entrenamiento activo!`);
                       }
                     }}
                     className="p-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-brand-blue text-xs font-bold flex items-center gap-1 transition-colors shrink-0"

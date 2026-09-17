@@ -1,0 +1,12 @@
+{
+  "name": "@gym/i18n",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "test": "tsx tests/search.test.js"
+  },
+  "dependencies": {
+    "@gym/types": "*"
+  }
+}

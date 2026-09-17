@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import { Dumbbell, Cloud, CloudOff, RefreshCw, CheckCircle2, Shield } from 'lucide-react';
@@ -97,6 +97,15 @@ export function Navbar({
 
         {/* Indicador de estado de sincronización */}
         {getSyncBadge()}
+
+        {/* Indicador de Idioma / Localización Activa */}
+        <div 
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50/80 border border-blue-200 text-xs font-bold text-brand-darkBlue shadow-xs"
+          title="Idioma activo: Español Neutral Fitness"
+        >
+          <span className="text-[12px] leading-none">🇪🇸</span>
+          <span className="text-[11px] tracking-wide text-brand-blue font-black">ES</span>
+        </div>
 
         {/* Perfil Mario */}
         <div className="flex items-center gap-2 pl-2 border-l border-gray-200">

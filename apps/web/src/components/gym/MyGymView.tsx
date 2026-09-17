@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { 
@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import type { Gym, GymEquipmentItem, Machine } from '@gym/types';
 import { CANONICAL_MACHINES } from '@gym/ai';
+import { getLocalizedTaxonomy } from '@gym/i18n';
 import { AppStorage } from '../../lib/storage';
 
 interface MyGymViewProps {
@@ -151,7 +152,7 @@ export function MyGymView({ onNavigateToScanner }: MyGymViewProps) {
                       {item.customLabel}
                     </h4>
                     <div className="text-[11px] text-brand-textSecondary mt-0.5 capitalize">
-                      Tipo: {item.equipmentType}
+                      Tipo: {getLocalizedTaxonomy('equipments', item.equipmentType, 'es')}
                     </div>
                   </div>
                 </div>

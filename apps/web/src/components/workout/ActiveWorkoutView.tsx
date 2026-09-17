@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { 
@@ -32,6 +32,7 @@ import {
   evaluatePersonalRecord,
   evaluateProgressiveOverload 
 } from '@gym/calculations';
+import { getExerciseDisplayName, matchesExercise, getLocalizedTaxonomy } from '@gym/i18n';
 import { AppStorage } from '../../lib/storage';
 import { RestTimerModal } from './RestTimerModal';
 
@@ -273,13 +274,8 @@ export function ActiveWorkoutView({
   };
 
   const filteredExercises = exerciseCatalog.filter(ex => {
-    const term = searchQuery.toLowerCase();
-    return (
-      (ex.nameEs || ex.name).toLowerCase().includes(term) ||
-      (ex.targetEs || ex.target).toLowerCase().includes(term) ||
-      (ex.bodyPartEs || ex.bodyPart).toLowerCase().includes(term) ||
-      (ex.equipmentEs || ex.equipment).toLowerCase().includes(term)
-    );
+    if (!searchQuery.trim()) return true;
+    return matchesExercise(ex, searchQuery);
   }).slice(0, 30);
 
   return (
@@ -369,7 +365,7 @@ export function ActiveWorkoutView({
                     {exItem.exercise.image ? (
                       <img
                         src={exItem.exercise.image}
-                        alt={exItem.exercise.nameEs || exItem.exercise.name}
+                        alt={getExerciseDisplayName(exItem.exercise, 'es')}
                         className="w-12 h-12 rounded-lg object-cover bg-gray-50 border border-gray-200"
                         onError={(e) => {
                           // Fallback si la imagen no carga
@@ -383,14 +379,14 @@ export function ActiveWorkoutView({
                     )}
                     <div>
                       <h3 className="text-sm font-bold text-brand-textPrimary">
-                        {exItem.exercise.nameEs || exItem.exercise.name}
+                        {getExerciseDisplayName(exItem.exercise, 'es')}
                       </h3>
                       <div className="flex items-center gap-2 text-[11px] text-brand-textSecondary mt-0.5">
                         <span className="capitalize font-medium text-brand-blue">
-                          {exItem.exercise.bodyPartEs || exItem.exercise.bodyPart}
+                          {getLocalizedTaxonomy('bodyParts', exItem.exercise.bodyPart, 'es')}
                         </span>
                         <span>•</span>
-                        <span>{exItem.exercise.equipmentEs || exItem.exercise.equipment}</span>
+                        <span>{getLocalizedTaxonomy('equipments', exItem.exercise.equipment, 'es')}</span>
                       </div>
                     </div>
                   </div>
@@ -612,17 +608,17 @@ export function ActiveWorkoutView({
                     {ex.image && (
                       <img
                         src={ex.image}
-                        alt={ex.nameEs || ex.name}
+                        alt={getExerciseDisplayName(ex, 'es')}
                         className="w-10 h-10 rounded-md object-cover bg-gray-50 border border-gray-200"
                         onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
                       />
                     )}
                     <div>
                       <div className="text-xs font-bold text-brand-textPrimary">
-                        {ex.nameEs || ex.name}
+                        {getExerciseDisplayName(ex, 'es')}
                       </div>
                       <div className="text-[11px] text-brand-textSecondary mt-0.5">
-                        <span className="capitalize">{ex.bodyPartEs || ex.bodyPart}</span> • {ex.equipmentEs || ex.equipment}
+                        <span className="capitalize">{getLocalizedTaxonomy('bodyParts', ex.bodyPart, 'es')}</span> • {getLocalizedTaxonomy('equipments', ex.equipment, 'es')}
                       </div>
                     </div>
                   </div>

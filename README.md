@@ -1,4 +1,4 @@
-﻿# GYM PROGRESS — Tu Asistente Inteligente de Entrenamiento
+# GYM PROGRESS — Tu Asistente Inteligente de Entrenamiento
 
 > Plataforma profesional, moderna y completa de entrenamiento para gimnasio que combina la velocidad de registro de **HEVY** con la elegancia y sobriedad de **MICROSOFT 365**, potenciada por Inteligencia Artificial y un catálogo de más de 1,300 ejercicios.
 
@@ -21,12 +21,14 @@ gym-progress/
 │   └── web/                    # Next.js 14+ (App Router, Tailwind CSS, PWA)
 ├── packages/
 │   ├── types/                  # Modelos de dominio y contratos TypeScript transversales
+│   ├── i18n/                   # Internacionalización, taxonomías bilingües y motor de búsqueda diacrítica
 │   ├── calculations/           # Motor de cálculo puro: 1RM Epley, volumen, PRs y sobrecarga
 │   ├── ai/                     # Visión artificial para escaneo de máquinas y mapeo de ejercicios
 │   ├── offline-sync/           # Motor de almacenamiento y sincronización offline-first
 │   └── exercise-dataset/       # Dataset normalizado con 1,324 ejercicios e instrucciones en español
 ├── scripts/
 │   └── import-exercises/       # Script CLI de validación, normalización y siembra en BD
+├── vercel.json                 # Configuración de despliegue optimizada para Vercel
 ├── package.json
 └── README.md
 ```

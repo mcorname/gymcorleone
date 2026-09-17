@@ -12,26 +12,48 @@ export type MuscleGroup =
   | 'antebrazo'
   | 'trapecio';
 
+export type SupportedLocale = 'es' | 'en';
+
+export interface ExerciseTranslationItem {
+  name: string;
+  instructions?: string[];
+  instructionSteps?: string[];
+}
+
+export interface ExerciseTranslations {
+  es?: ExerciseTranslationItem;
+  en?: ExerciseTranslationItem;
+  [locale: string]: ExerciseTranslationItem | undefined;
+}
+
 export interface Exercise {
   id: string;
   name: string;
-  nameEs: string;
-  category: string;
+  category?: string;
   bodyPart: string;
-  bodyPartEs?: string;
   equipment: string;
-  equipmentEs?: string;
   target: string;
-  targetEs?: string;
-  muscleGroup: string;
+  muscleGroup?: string;
   secondaryMuscles: string[];
-  instructionsEs: string[];
-  instructionStepsEs: string[];
+  instructions?: string[];
+  instructionSteps?: string[];
   image: string;
   gifUrl: string;
   mediaId?: string;
   attribution?: string;
   isCustom?: boolean;
+
+  // Localización profesional
+  translations?: ExerciseTranslations;
+  aliases?: string[];
+
+  // Campos de compatibilidad hacia atrás
+  nameEs?: string;
+  bodyPartEs?: string;
+  equipmentEs?: string;
+  targetEs?: string;
+  instructionsEs?: string[];
+  instructionStepsEs?: string[];
 }
 
 export type SetType =

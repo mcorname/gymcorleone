@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { 
@@ -14,6 +14,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import type { Routine, RoutineDay, WorkoutSession, WorkoutExercise } from '@gym/types';
+import { getExerciseDisplayName, getLocalizedTaxonomy } from '@gym/i18n';
 import { AppStorage, DEFAULT_ROUTINES } from '../../lib/storage';
 
 interface RoutinesViewProps {
@@ -204,10 +205,10 @@ export function RoutinesView({ onStartRoutine }: RoutinesViewProps) {
                               </span>
                               <div>
                                 <div className="font-bold text-brand-textPrimary">
-                                  {item.exercise.nameEs || item.exercise.name}
+                                  {getExerciseDisplayName(item.exercise, 'es')}
                                 </div>
                                 <div className="text-[11px] text-brand-textSecondary capitalize">
-                                  {item.exercise.bodyPartEs || item.exercise.bodyPart} • {item.exercise.equipmentEs || item.exercise.equipment}
+                                  {getLocalizedTaxonomy('bodyParts', item.exercise.bodyPart, 'es')} • {getLocalizedTaxonomy('equipments', item.exercise.equipment, 'es')}
                                 </div>
                               </div>
                             </div>

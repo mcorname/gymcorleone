@@ -1,4 +1,4 @@
-﻿# Dependencies
+# Dependencies
 node_modules/
 .pnp
 .pnp.js
@@ -21,7 +21,14 @@ build/
 # Turborepo
 .turbo/
 
+# Vercel
+.vercel/
+
+# Backups
+*.backup.json
+
 # OS Files
 .DS_Store
 Thumbs.db
 *.log
+

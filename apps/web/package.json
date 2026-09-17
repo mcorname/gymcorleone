@@ -19,7 +19,8 @@
     "@gym/types": "*",
     "@gym/calculations": "*",
     "@gym/ai": "*",
-    "@gym/offline-sync": "*"
+    "@gym/offline-sync": "*",
+    "@gym/i18n": "*"
   },
   "devDependencies": {
     "@types/node": "^20.14.9",

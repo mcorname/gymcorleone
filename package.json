@@ -8,11 +8,12 @@
   ],
   "scripts": {
     "dev": "npm --workspace=apps/web run dev",
-    "build": "npm run build --workspaces",
-    "test": "npm run test --workspaces",
+    "build": "npm --workspace=apps/web run build",
+    "test": "npm --workspace=@gym/i18n run test",
     "import-exercises": "node scripts/import-exercises/import.js"
   },
   "devDependencies": {
+    "tsx": "^4.23.13",
     "typescript": "^5.4.5"
   }
 }
