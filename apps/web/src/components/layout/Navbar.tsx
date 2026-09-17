@@ -1,0 +1,114 @@
+﻿'use client';
+
+import React from 'react';
+import { Dumbbell, Cloud, CloudOff, RefreshCw, CheckCircle2, Shield } from 'lucide-react';
+import type { SyncStatus } from '@gym/offline-sync';
+
+interface NavbarProps {
+  activeTab: string;
+  onNavigate: (tab: string) => void;
+  syncStatus: SyncStatus;
+  gymName: string;
+  hasActiveWorkout: boolean;
+  onOpenActiveWorkout: () => void;
+}
+
+export function Navbar({
+  activeTab,
+  onNavigate,
+  syncStatus,
+  gymName,
+  hasActiveWorkout,
+  onOpenActiveWorkout
+}: NavbarProps) {
+  const getSyncBadge = () => {
+    switch (syncStatus) {
+      case 'offline':
+        return (
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-xs font-medium">
+            <CloudOff className="w-3.5 h-3.5 text-amber-600" />
+            <span>Sin conexión (Modo local seguro)</span>
+          </div>
+        );
+      case 'syncing':
+        return (
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-medium">
+            <RefreshCw className="w-3.5 h-3.5 text-blue-600 animate-spin" />
+            <span>Sincronizando...</span>
+          </div>
+        );
+      case 'saved_local':
+        return (
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-medium">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Guardado en dispositivo</span>
+          </div>
+        );
+      case 'synced':
+      default:
+        return (
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-medium">
+            <Cloud className="w-3.5 h-3.5 text-emerald-600" />
+            <span className="hidden sm:inline">Sincronizado</span>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <header className="sticky top-0 z-40 bg-white border-b border-brand-border h-16 flex items-center justify-between px-4 lg:px-8 shadow-subtle">
+      <div className="flex items-center gap-3">
+        <button 
+          onClick={() => onNavigate('dashboard')}
+          className="flex items-center gap-2.5 text-brand-darkBlue font-bold text-lg tracking-tight hover:opacity-90"
+        >
+          <div className="w-9 h-9 rounded-lg bg-brand-blue flex items-center justify-center text-white shadow-sm">
+            <Dumbbell className="w-5 h-5" />
+          </div>
+          <div className="text-left">
+            <div className="leading-none text-brand-darkBlue font-black text-base">GYM PROGRESS</div>
+            <div className="text-[11px] font-normal text-brand-textSecondary mt-0.5">Asistente Inteligente</div>
+          </div>
+        </button>
+
+        {/* Gimnasio activo badge */}
+        <div 
+          onClick={() => onNavigate('gym')} 
+          className="hidden md:flex items-center gap-1.5 ml-3 px-2.5 py-1 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer text-xs text-brand-textPrimary font-medium border border-gray-200 transition-colors"
+          title="Equipamiento sincronizado con tu gimnasio"
+        >
+          <Shield className="w-3.5 h-3.5 text-brand-blue" />
+          <span>{gymName}</span>
+        </div>
+      </div>
+
+      {/* Acciones del Topbar */}
+      <div className="flex items-center gap-3">
+        {/* Banner o botón rápido de entrenamiento en curso */}
+        {hasActiveWorkout && (
+          <button
+            onClick={onOpenActiveWorkout}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#D83B01] text-white text-xs font-semibold shadow-sm hover:bg-[#b83200] transition-colors animate-pulse"
+          >
+            <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
+            <span>Entrenamiento en Vivo</span>
+          </button>
+        )}
+
+        {/* Indicador de estado de sincronización */}
+        {getSyncBadge()}
+
+        {/* Perfil Mario */}
+        <div className="flex items-center gap-2 pl-2 border-l border-gray-200">
+          <div className="w-8 h-8 rounded-full bg-brand-blue text-white flex items-center justify-center font-bold text-xs shadow-sm">
+            MC
+          </div>
+          <div className="hidden xl:block text-left text-xs">
+            <div className="font-semibold text-brand-textPrimary leading-none">Mario Castro</div>
+            <div className="text-[10px] text-brand-textSecondary mt-0.5">Nivel Intermedio</div>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
