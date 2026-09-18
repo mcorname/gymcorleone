@@ -14,6 +14,7 @@ import { CANONICAL_MACHINES } from '@gym/ai';
 const KEYS = {
   EXERCISES: 'gym_progress_exercises',
   ACTIVE_SESSION: 'gym_progress_active_session',
+  DRAFT_WORKOUT: 'gym_progress_draft_workout',
   WORKOUT_HISTORY: 'gym_progress_workout_history',
   PERSONAL_RECORDS: 'gym_progress_prs',
   ROUTINES: 'gym_progress_routines',
@@ -299,14 +300,22 @@ export class AppStorage {
     this.safeSetItem(KEYS.EXERCISES, JSON.stringify(exercises));
   }
 
-  // Sesión Activa
+  // Sesión Activa (Únicamente entrenamientos que fueron explícitamente iniciados)
   public static getActiveSession(): WorkoutSession | null {
     if (typeof window === 'undefined') return null;
     try {
       const stored = localStorage.getItem(KEYS.ACTIVE_SESSION);
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (parsed && typeof parsed === 'object' && parsed.id && Array.isArray(parsed.exercises)) {
+        if (
+          parsed && 
+          typeof parsed === 'object' && 
+          parsed.id && 
+          Array.isArray(parsed.exercises) &&
+          parsed.status === 'in_progress' &&
+          typeof parsed.startedAt === 'string' &&
+          parsed.startedAt.length > 0
+        ) {
           return parsed as WorkoutSession;
         }
       }
@@ -317,10 +326,39 @@ export class AppStorage {
   }
 
   public static setActiveSession(session: WorkoutSession | null): void {
-    if (session) {
+    if (session && session.status === 'in_progress' && session.startedAt) {
       this.safeSetItem(KEYS.ACTIVE_SESSION, JSON.stringify(session));
     } else {
       this.safeRemoveItem(KEYS.ACTIVE_SESSION);
+    }
+  }
+
+  public static hasActiveWorkout(): boolean {
+    return this.getActiveSession() !== null;
+  }
+
+  // Borrador de Entrenamiento en Preparación (DRAFT)
+  public static getDraftWorkout(): WorkoutSession | null {
+    if (typeof window === 'undefined') return null;
+    try {
+      const stored = localStorage.getItem(KEYS.DRAFT_WORKOUT);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed && typeof parsed === 'object' && parsed.id && Array.isArray(parsed.exercises)) {
+          return parsed as WorkoutSession;
+        }
+      }
+    } catch (e) {
+      console.warn('[AppStorage] Error al leer borrador de entrenamiento:', e);
+    }
+    return null;
+  }
+
+  public static setDraftWorkout(draft: WorkoutSession | null): void {
+    if (draft) {
+      this.safeSetItem(KEYS.DRAFT_WORKOUT, JSON.stringify(draft));
+    } else {
+      this.safeRemoveItem(KEYS.DRAFT_WORKOUT);
     }
   }
 

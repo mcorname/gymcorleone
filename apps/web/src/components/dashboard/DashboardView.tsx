@@ -18,9 +18,10 @@ import { AppStorage, DEFAULT_ROUTINES } from '../../lib/storage';
 interface DashboardViewProps {
   onStartWorkout: (session?: WorkoutSession) => void;
   onNavigate: (tab: string) => void;
+  hasActiveWorkout?: boolean;
 }
 
-export function DashboardView({ onStartWorkout, onNavigate }: DashboardViewProps) {
+export function DashboardView({ onStartWorkout, onNavigate, hasActiveWorkout }: DashboardViewProps) {
   const [history, setHistory] = useState<WorkoutSession[]>(() => AppStorage.getHistory());
   const [prs, setPRs] = useState(() => AppStorage.getPRs());
   const [measurements, setMeasurements] = useState(() => AppStorage.getMeasurements());
@@ -42,22 +43,28 @@ export function DashboardView({ onStartWorkout, onNavigate }: DashboardViewProps
   };
 
   const handleStartTodayWorkout = () => {
-    // Tomar el primer día de la rutina principal
+    // Si ya existe una sesión activa real, redirigir a ella sin reiniciar
+    if (hasActiveWorkout) {
+      onNavigate('workout');
+      return;
+    }
+
+    // Tomar el primer día de la rutina principal en modo PREPARACIÓN (DRAFT)
     const routine = DEFAULT_ROUTINES[0];
     const day = routine.days[0];
 
     const session: WorkoutSession = {
-      id: 'session-' + Date.now(),
+      id: 'draft-' + Date.now(),
       routineId: routine.id,
       routineTitle: `${routine.title} - ${day.name}`,
       title: day.name,
-      startedAt: new Date().toISOString(),
+      startedAt: undefined,
       durationSeconds: 0,
       totalVolumeKg: 0,
-      status: 'in_progress',
+      status: 'draft',
       exercises: day.exercises.map((item: RoutineExerciseItem, idx: number) => ({
         id: 'we-' + idx + '-' + Date.now(),
-        sessionId: 'session-' + Date.now(),
+        sessionId: 'draft-' + Date.now(),
         exerciseId: item.exerciseId,
         exercise: item.exercise,
         order: idx + 1,
@@ -98,10 +105,14 @@ export function DashboardView({ onStartWorkout, onNavigate }: DashboardViewProps
 
         <button
           onClick={handleStartTodayWorkout}
-          className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-brand-blue hover:bg-blue-700 text-white font-bold text-sm shadow-md transition-all active:scale-95 shrink-0"
+          className={`inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl font-bold text-sm shadow-md transition-all active:scale-95 shrink-0 ${
+            hasActiveWorkout
+              ? 'bg-[#D83B01] hover:bg-[#b83200] text-white animate-pulse'
+              : 'bg-brand-blue hover:bg-blue-700 text-white'
+          }`}
         >
           <Play className="w-5 h-5 fill-white" />
-          <span>INICIAR ENTRENAMIENTO</span>
+          <span>{hasActiveWorkout ? 'CONTINUAR ENTRENAMIENTO' : 'PREPARAR ENTRENAMIENTO'}</span>
         </button>
       </div>
 

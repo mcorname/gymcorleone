@@ -93,7 +93,7 @@ export interface WorkoutExercise {
   sets: WorkoutSet[];
 }
 
-export type WorkoutStatus = 'in_progress' | 'completed' | 'discarded';
+export type WorkoutStatus = 'draft' | 'in_progress' | 'completed' | 'discarded' | 'cancelled';
 
 export interface WorkoutSession {
   id: string;
@@ -101,7 +101,7 @@ export interface WorkoutSession {
   routineId?: string;
   routineTitle?: string;
   title: string;
-  startedAt: string;
+  startedAt?: string;
   completedAt?: string;
   durationSeconds: number;
   totalVolumeKg: number;

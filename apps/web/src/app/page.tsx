@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components/layout/Navbar';
@@ -23,6 +23,7 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('synced');
   const [activeSession, setActiveSession] = useState<WorkoutSession | null>(null);
+  const [draftSession, setDraftSession] = useState<WorkoutSession | null>(null);
   const [gymName, setGymName] = useState<string>('SmartFit Centro');
 
   useEffect(() => {
@@ -31,10 +32,16 @@ export default function HomePage() {
       setSyncStatus(status);
     });
 
-    // Cargar sesión activa si existe guardada en local
-    const saved = AppStorage.getActiveSession();
-    if (saved) {
-      setActiveSession(saved);
+    // Cargar sesión activa sólo si existe y está en curso
+    const savedActive = AppStorage.getActiveSession();
+    if (savedActive && savedActive.status === 'in_progress' && savedActive.startedAt) {
+      setActiveSession(savedActive);
+    }
+
+    // Cargar borrador de preparación si existe
+    const savedDraft = AppStorage.getDraftWorkout();
+    if (savedDraft) {
+      setDraftSession(savedDraft);
     }
 
     const currentGym = AppStorage.getMyGym();
@@ -45,87 +52,162 @@ export default function HomePage() {
     return () => unsubscribe();
   }, []);
 
-  // Iniciar entrenamiento desde cualquier parte (Dashboard o Rutinas)
-  const handleStartWorkout = (session?: WorkoutSession) => {
-    if (session) {
-      setActiveSession(session);
-      AppStorage.setActiveSession(session);
+  // Determinar si hay un entrenamiento activo real en curso
+  const hasActiveWorkout = !!activeSession && activeSession.status === 'in_progress' && !!activeSession.startedAt;
+
+  // Preparar entrenamiento (desde Dashboard, Rutinas, o Menú)
+  const handlePrepareWorkout = (sessionOrDraft?: WorkoutSession) => {
+    // Si ya hay un entrenamiento activo en curso, ir directamente a él sin sobrescribir
+    if (hasActiveWorkout) {
+      setActiveTab('workout');
+      return;
+    }
+
+    if (sessionOrDraft) {
+      if (sessionOrDraft.status === 'in_progress' && sessionOrDraft.startedAt) {
+        setActiveSession(sessionOrDraft);
+        AppStorage.setActiveSession(sessionOrDraft);
+      } else {
+        // Modo preparación (DRAFT)
+        setDraftSession(sessionOrDraft);
+        AppStorage.setDraftWorkout(sessionOrDraft);
+      }
     } else {
-      // Sesión libre
-      const newSession: WorkoutSession = {
-        id: 'session-' + Date.now(),
-        title: 'Entrenamiento Libre',
-        startedAt: new Date().toISOString(),
-        durationSeconds: 0,
-        totalVolumeKg: 0,
-        status: 'in_progress',
-        exercises: []
-      };
-      setActiveSession(newSession);
-      AppStorage.setActiveSession(newSession);
+      // Si no viene sesión dada, revisar si ya hay un borrador previo guardado
+      const existingDraft = AppStorage.getDraftWorkout();
+      if (!existingDraft) {
+        const freshDraft: WorkoutSession = {
+          id: 'draft-' + Date.now(),
+          title: 'Preparar Entrenamiento',
+          startedAt: undefined,
+          durationSeconds: 0,
+          totalVolumeKg: 0,
+          status: 'draft',
+          exercises: []
+        };
+        setDraftSession(freshDraft);
+        AppStorage.setDraftWorkout(freshDraft);
+      } else {
+        setDraftSession(existingDraft);
+      }
     }
     setActiveTab('workout');
   };
 
-  // Agregar ejercicio a la sesión activa (por ejemplo desde el escáner de máquinas o catálogo)
-  const handleAddExerciseToActiveWorkout = (exercise: Exercise) => {
-    let current = activeSession || AppStorage.getActiveSession();
-    if (!current) {
-      current = {
-        id: 'session-' + Date.now(),
-        title: 'Entrenamiento Libre',
-        startedAt: new Date().toISOString(),
-        durationSeconds: 0,
-        totalVolumeKg: 0,
-        status: 'in_progress',
-        exercises: []
-      };
-    }
-
-    const updatedExercises = [
-      ...current.exercises,
-      {
-        id: 'we-' + Date.now(),
-        sessionId: current.id,
-        exerciseId: exercise.id,
-        exercise: exercise,
-        order: current.exercises.length + 1,
-        sets: [
-          {
-            id: 'set-1-' + Date.now(),
-            workoutExerciseId: 'we-' + Date.now(),
-            setNumber: 1,
-            setType: 'normal' as const,
-            weightKg: 50,
-            reps: 10,
-            rir: 2,
-            isCompleted: false,
-            volumeKg: 0,
-            estimated1rmKg: 0
-          }
-        ]
-      }
-    ];
-
-    const updatedSession = { ...current, exercises: updatedExercises };
-    setActiveSession(updatedSession);
-    AppStorage.setActiveSession(updatedSession);
+  // Activación explícita (cuando el usuario pulsa [ INICIAR ENTRENAMIENTO ])
+  const handleActivateWorkout = (activatedSession: WorkoutSession) => {
+    setActiveSession(activatedSession);
+    setDraftSession(null);
+    AppStorage.setActiveSession(activatedSession);
+    AppStorage.setDraftWorkout(null);
   };
 
-  const handleFinishWorkout = () => {
-    setActiveSession(null);
-    AppStorage.setActiveSession(null);
+  // Guardado de borrador mientras se prepara
+  const handleSaveDraft = (draft: WorkoutSession | null) => {
+    setDraftSession(draft);
+    AppStorage.setDraftWorkout(draft);
+  };
+
+  // Descartar borrador y volver al dashboard
+  const handleCancelWorkout = () => {
     setActiveTab('dashboard');
   };
 
-  const hasActiveWorkout = !!activeSession;
+  // Finalizar sesión activa
+  const handleFinishWorkout = () => {
+    setActiveSession(null);
+    setDraftSession(null);
+    AppStorage.setActiveSession(null);
+    AppStorage.setDraftWorkout(null);
+    setActiveTab('dashboard');
+  };
+
+  // Agregar ejercicio a la sesión activa o al borrador en preparación
+  const handleAddExerciseToWorkout = (exercise: Exercise) => {
+    if (hasActiveWorkout && activeSession) {
+      // Sesión activa en curso: se añade a la sesión activa
+      const updatedExercises = [
+        ...activeSession.exercises,
+        {
+          id: 'we-' + Date.now(),
+          sessionId: activeSession.id,
+          exerciseId: exercise.id,
+          exercise: exercise,
+          order: activeSession.exercises.length + 1,
+          sets: [
+            {
+              id: 'set-1-' + Date.now(),
+              workoutExerciseId: 'we-' + Date.now(),
+              setNumber: 1,
+              setType: 'normal' as const,
+              weightKg: 50,
+              reps: 10,
+              rir: 2,
+              isCompleted: false,
+              volumeKg: 0,
+              estimated1rmKg: 0
+            }
+          ]
+        }
+      ];
+      const updatedSession = { ...activeSession, exercises: updatedExercises };
+      setActiveSession(updatedSession);
+      AppStorage.setActiveSession(updatedSession);
+    } else {
+      // Modo preparación (DRAFT): se añade al borrador sin iniciar sesión activa
+      const currentDraft = draftSession || AppStorage.getDraftWorkout() || {
+        id: 'draft-' + Date.now(),
+        title: 'Preparar Entrenamiento',
+        startedAt: undefined,
+        durationSeconds: 0,
+        totalVolumeKg: 0,
+        status: 'draft',
+        exercises: []
+      };
+
+      const updatedExercises = [
+        ...currentDraft.exercises,
+        {
+          id: 'we-' + Date.now(),
+          sessionId: currentDraft.id,
+          exerciseId: exercise.id,
+          exercise: exercise,
+          order: currentDraft.exercises.length + 1,
+          sets: [
+            {
+              id: 'set-1-' + Date.now(),
+              workoutExerciseId: 'we-' + Date.now(),
+              setNumber: 1,
+              setType: 'normal' as const,
+              weightKg: 50,
+              reps: 10,
+              rir: 2,
+              isCompleted: false,
+              volumeKg: 0,
+              estimated1rmKg: 0
+            }
+          ]
+        }
+      ];
+
+      const updatedDraft: WorkoutSession = { ...currentDraft, exercises: updatedExercises };
+      setDraftSession(updatedDraft);
+      AppStorage.setDraftWorkout(updatedDraft);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-brand-bg">
       {/* Top Navbar */}
       <Navbar
         activeTab={activeTab}
-        onNavigate={setActiveTab}
+        onNavigate={(tab) => {
+          if (tab === 'workout') {
+            handlePrepareWorkout();
+          } else {
+            setActiveTab(tab);
+          }
+        }}
         syncStatus={syncStatus}
         gymName={gymName}
         hasActiveWorkout={hasActiveWorkout}
@@ -136,7 +218,13 @@ export default function HomePage() {
         {/* Web Sidebar */}
         <Sidebar
           activeTab={activeTab}
-          onNavigate={setActiveTab}
+          onNavigate={(tab) => {
+            if (tab === 'workout') {
+              handlePrepareWorkout();
+            } else {
+              setActiveTab(tab);
+            }
+          }}
           hasActiveWorkout={hasActiveWorkout}
         />
 
@@ -144,33 +232,36 @@ export default function HomePage() {
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
           {activeTab === 'dashboard' && (
             <DashboardView
-              onStartWorkout={handleStartWorkout}
+              onStartWorkout={handlePrepareWorkout}
               onNavigate={setActiveTab}
+              hasActiveWorkout={hasActiveWorkout}
             />
           )}
 
           {activeTab === 'workout' && (
             <ActiveWorkoutView
-              initialSession={activeSession}
+              key={hasActiveWorkout ? (activeSession?.id || 'active') : (draftSession?.id || 'draft')}
+              initialSession={hasActiveWorkout ? activeSession : draftSession}
               onFinish={handleFinishWorkout}
-              onCancel={() => setActiveTab('dashboard')}
+              onCancel={handleCancelWorkout}
+              onActivateWorkout={handleActivateWorkout}
+              onSaveDraft={handleSaveDraft}
+              onOpenRoutines={() => setActiveTab('routines')}
+              hasActiveWorkout={hasActiveWorkout}
             />
           )}
 
           {activeTab === 'routines' && (
             <RoutinesView
-              onStartRoutine={(session) => {
-                setActiveSession(session);
-                AppStorage.setActiveSession(session);
-                setActiveTab('workout');
-              }}
+              onStartRoutine={handlePrepareWorkout}
+              hasActiveWorkout={hasActiveWorkout}
             />
           )}
 
           {activeTab === 'exercises' && (
             <ExerciseCatalogView
               onSelectExerciseForWorkout={(exercise) => {
-                handleAddExerciseToActiveWorkout(exercise);
+                handleAddExerciseToWorkout(exercise);
                 setActiveTab('workout');
               }}
             />
@@ -179,7 +270,7 @@ export default function HomePage() {
           {activeTab === 'machines' && (
             <MachineScannerView
               onAddExerciseToActiveWorkout={(exercise) => {
-                handleAddExerciseToActiveWorkout(exercise);
+                handleAddExerciseToWorkout(exercise);
               }}
               onNavigateToGym={() => setActiveTab('gym')}
             />
@@ -219,7 +310,13 @@ export default function HomePage() {
       {/* Bottom Navigation para Dispositivos Móviles */}
       <BottomNav
         activeTab={activeTab}
-        onNavigate={setActiveTab}
+        onNavigate={(tab) => {
+          if (tab === 'workout') {
+            handlePrepareWorkout();
+          } else {
+            setActiveTab(tab);
+          }
+        }}
         hasActiveWorkout={hasActiveWorkout}
       />
     </div>

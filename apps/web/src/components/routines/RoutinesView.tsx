@@ -12,9 +12,10 @@ import { AppStorage } from '../../lib/storage';
 
 interface RoutinesViewProps {
   onStartRoutine: (session: WorkoutSession) => void;
+  hasActiveWorkout?: boolean;
 }
 
-export function RoutinesView({ onStartRoutine }: RoutinesViewProps) {
+export function RoutinesView({ onStartRoutine, hasActiveWorkout }: RoutinesViewProps) {
   const [routines, setRoutines] = useState<Routine[]>(() => AppStorage.getRoutines());
   const [selectedRoutine, setSelectedRoutine] = useState<Routine | null>(routines[0] || null);
 
@@ -32,17 +33,17 @@ export function RoutinesView({ onStartRoutine }: RoutinesViewProps) {
 
   const handleStartRoutineDay = (routine: Routine, day: RoutineDay) => {
     const workoutSession: WorkoutSession = {
-      id: 'session-' + Date.now(),
+      id: 'draft-' + Date.now(),
       routineId: routine.id,
       routineTitle: `${routine.title} - ${day.name}`,
       title: day.name,
-      startedAt: new Date().toISOString(),
+      startedAt: undefined,
       durationSeconds: 0,
       totalVolumeKg: 0,
-      status: 'in_progress',
+      status: 'draft',
       exercises: day.exercises.map((item, idx) => ({
         id: 'we-' + idx + '-' + Date.now(),
-        sessionId: 'session-' + Date.now(),
+        sessionId: 'draft-' + Date.now(),
         exerciseId: item.exerciseId,
         exercise: item.exercise,
         order: idx + 1,
