@@ -6,14 +6,12 @@ import {
   Upload, 
   Sparkles, 
   CheckCircle2, 
-  AlertCircle, 
-  HelpCircle, 
-  Plus, 
-  Shield, 
-  Sliders, 
-  Activity, 
+  AlertCircle,
+  Plus,
+  Shield,
+  Sliders,
+  Activity,
   ChevronRight,
-  Info,
   Layers,
   ArrowRight
 } from 'lucide-react';
@@ -85,14 +83,16 @@ export function MachineScannerView({
 
   const handleSaveToMyGym = () => {
     if (!scanResult) return;
+    const machineId = selectedMachine?.id || 'm-' + scanResult.detectedMachineName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     AppStorage.saveGymEquipment({
       id: 'eq-' + Date.now(),
       gymId: 'gym-1',
-      machineId: 'm-' + Date.now(),
+      machineId,
       customLabel: scanResult.detectedMachineName,
       equipmentType: scanResult.datasetEquipmentMapping,
       identifiedViaAi: true,
-      isAvailable: true
+      isAvailable: true,
+      machine: selectedMachine || undefined
     });
 
     setSavedSuccessMessage(`¡"${scanResult.detectedMachineName}" guardada con éxito en tu inventario de Mi Gimnasio!`);

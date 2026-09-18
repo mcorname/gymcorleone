@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { 
@@ -9,8 +9,7 @@ import {
   Plus, 
   Calendar, 
   Sliders,
-  CheckCircle2,
-  AlertCircle
+  CheckCircle2
 } from 'lucide-react';
 import type { BodyMeasurement, PersonalRecord } from '@gym/types';
 import { calculateBMI } from '@gym/calculations';
@@ -40,16 +39,20 @@ export function ProgressView() {
 
   const handleSaveNewMeasurement = (e: React.FormEvent) => {
     e.preventDefault();
+    const weight = Number(newWeight);
+    const height = Number(newHeight);
+    if (isNaN(weight) || weight <= 0) return;
+
     const entry: BodyMeasurement = {
       id: 'bm-' + Date.now(),
       measuredAt: new Date().toISOString().split('T')[0],
-      weightKg: Number(newWeight),
-      heightCm: Number(newHeight),
-      bodyFatPercentage: newBodyFat ? Number(newBodyFat) : undefined,
-      waistCm: newWaist ? Number(newWaist) : undefined,
-      chestCm: newChest ? Number(newChest) : undefined,
-      bicepRightCm: newBicep ? Number(newBicep) : undefined,
-      notes: newNotes
+      weightKg: weight,
+      heightCm: isNaN(height) || height <= 0 ? undefined : height,
+      bodyFatPercentage: newBodyFat && !isNaN(Number(newBodyFat)) ? Number(newBodyFat) : undefined,
+      waistCm: newWaist && !isNaN(Number(newWaist)) ? Number(newWaist) : undefined,
+      chestCm: newChest && !isNaN(Number(newChest)) ? Number(newChest) : undefined,
+      bicepRightCm: newBicep && !isNaN(Number(newBicep)) ? Number(newBicep) : undefined,
+      notes: newNotes.trim() || undefined
     };
 
     AppStorage.saveMeasurement(entry);

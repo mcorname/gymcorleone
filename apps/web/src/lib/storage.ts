@@ -254,21 +254,49 @@ export const INITIAL_HISTORY: WorkoutSession[] = [
 ];
 
 export class AppStorage {
+  private static safeSetItem(key: string, value: string): boolean {
+    if (typeof window === 'undefined') return false;
+    try {
+      localStorage.setItem(key, value);
+      return true;
+    } catch (err: unknown) {
+      if (err instanceof DOMException && (
+        err.name === 'QuotaExceededError' ||
+        err.name === 'NS_ERROR_DOM_QUOTA_REACHED' ||
+        err.code === 22 ||
+        err.code === 1014
+      )) {
+        console.error(`[AppStorage] Alerta: Cuota de almacenamiento local excedida (QuotaExceededError) al guardar la clave "${key}".`);
+      } else {
+        console.error(`[AppStorage] Error al persistir en localStorage para la clave "${key}":`, err);
+      }
+      return false;
+    }
+  }
+
+  private static safeRemoveItem(key: string): void {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.removeItem(key);
+    } catch (err) {
+      console.error(`[AppStorage] Error al eliminar clave "${key}" de localStorage:`, err);
+    }
+  }
+
   // Ejercicios
   public static getExercises(): Exercise[] {
     if (typeof window === 'undefined') return [];
     try {
       const stored = localStorage.getItem(KEYS.EXERCISES);
       if (stored) return JSON.parse(stored);
-    } catch {}
+    } catch (e) {
+      console.warn('[AppStorage] Error al leer ejercicios de localStorage:', e);
+    }
     return [];
   }
 
   public static setExercises(exercises: Exercise[]): void {
-    if (typeof window === 'undefined') return;
-    try {
-      localStorage.setItem(KEYS.EXERCISES, JSON.stringify(exercises));
-    } catch {}
+    this.safeSetItem(KEYS.EXERCISES, JSON.stringify(exercises));
   }
 
   // Sesión Activa
@@ -276,20 +304,24 @@ export class AppStorage {
     if (typeof window === 'undefined') return null;
     try {
       const stored = localStorage.getItem(KEYS.ACTIVE_SESSION);
-      if (stored) return JSON.parse(stored);
-    } catch {}
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed && typeof parsed === 'object' && parsed.id && Array.isArray(parsed.exercises)) {
+          return parsed as WorkoutSession;
+        }
+      }
+    } catch (e) {
+      console.warn('[AppStorage] Error o formato inválido al leer sesión activa:', e);
+    }
     return null;
   }
 
   public static setActiveSession(session: WorkoutSession | null): void {
-    if (typeof window === 'undefined') return;
-    try {
-      if (session) {
-        localStorage.setItem(KEYS.ACTIVE_SESSION, JSON.stringify(session));
-      } else {
-        localStorage.removeItem(KEYS.ACTIVE_SESSION);
-      }
-    } catch {}
+    if (session) {
+      this.safeSetItem(KEYS.ACTIVE_SESSION, JSON.stringify(session));
+    } else {
+      this.safeRemoveItem(KEYS.ACTIVE_SESSION);
+    }
   }
 
   // Historial de Sesiones
@@ -298,17 +330,16 @@ export class AppStorage {
     try {
       const stored = localStorage.getItem(KEYS.WORKOUT_HISTORY);
       if (stored) return JSON.parse(stored);
-    } catch {}
+    } catch (e) {
+      console.warn('[AppStorage] Error al leer historial:', e);
+    }
     return INITIAL_HISTORY;
   }
 
   public static addCompletedWorkout(session: WorkoutSession): void {
-    if (typeof window === 'undefined') return;
     const history = this.getHistory();
     history.unshift(session);
-    try {
-      localStorage.setItem(KEYS.WORKOUT_HISTORY, JSON.stringify(history));
-    } catch {}
+    this.safeSetItem(KEYS.WORKOUT_HISTORY, JSON.stringify(history));
   }
 
   // Récords Personales (PRs)
@@ -317,12 +348,13 @@ export class AppStorage {
     try {
       const stored = localStorage.getItem(KEYS.PERSONAL_RECORDS);
       if (stored) return JSON.parse(stored);
-    } catch {}
+    } catch (e) {
+      console.warn('[AppStorage] Error al leer PRs:', e);
+    }
     return INITIAL_PRS;
   }
 
   public static savePR(pr: PersonalRecord): void {
-    if (typeof window === 'undefined') return;
     const prs = this.getPRs();
     const index = prs.findIndex(p => p.exerciseId === pr.exerciseId && p.recordType === pr.recordType);
     if (index >= 0) {
@@ -330,9 +362,7 @@ export class AppStorage {
     } else {
       prs.unshift(pr);
     }
-    try {
-      localStorage.setItem(KEYS.PERSONAL_RECORDS, JSON.stringify(prs));
-    } catch {}
+    this.safeSetItem(KEYS.PERSONAL_RECORDS, JSON.stringify(prs));
   }
 
   // Rutinas
@@ -341,19 +371,18 @@ export class AppStorage {
     try {
       const stored = localStorage.getItem(KEYS.ROUTINES);
       if (stored) return JSON.parse(stored);
-    } catch {}
+    } catch (e) {
+      console.warn('[AppStorage] Error al leer rutinas:', e);
+    }
     return DEFAULT_ROUTINES;
   }
 
   public static saveRoutine(routine: Routine): void {
-    if (typeof window === 'undefined') return;
     const list = this.getRoutines();
     const index = list.findIndex(r => r.id === routine.id);
     if (index >= 0) list[index] = routine;
     else list.push(routine);
-    try {
-      localStorage.setItem(KEYS.ROUTINES, JSON.stringify(list));
-    } catch {}
+    this.safeSetItem(KEYS.ROUTINES, JSON.stringify(list));
   }
 
   // Medidas Corporales
@@ -387,17 +416,16 @@ export class AppStorage {
     try {
       const stored = localStorage.getItem(KEYS.BODY_MEASUREMENTS);
       if (stored) return JSON.parse(stored);
-    } catch {}
+    } catch (e) {
+      console.warn('[AppStorage] Error al leer medidas corporales:', e);
+    }
     return defaults;
   }
 
   public static saveMeasurement(measurement: BodyMeasurement): void {
-    if (typeof window === 'undefined') return;
     const list = this.getMeasurements();
     list.unshift(measurement);
-    try {
-      localStorage.setItem(KEYS.BODY_MEASUREMENTS, JSON.stringify(list));
-    } catch {}
+    this.safeSetItem(KEYS.BODY_MEASUREMENTS, JSON.stringify(list));
   }
 
   // Mi Gimnasio
@@ -454,12 +482,13 @@ export class AppStorage {
     try {
       const stored = localStorage.getItem(KEYS.MY_GYM);
       if (stored) return JSON.parse(stored);
-    } catch {}
+    } catch (e) {
+      console.warn('[AppStorage] Error al leer mi gimnasio:', e);
+    }
     return defaultGym;
   }
 
   public static saveGymEquipment(item: GymEquipmentItem): void {
-    if (typeof window === 'undefined') return;
     const gym = this.getMyGym();
     const existing = gym.equipment.findIndex(e => e.machineId === item.machineId);
     if (existing >= 0) {
@@ -467,8 +496,6 @@ export class AppStorage {
     } else {
       gym.equipment.unshift(item);
     }
-    try {
-      localStorage.setItem(KEYS.MY_GYM, JSON.stringify(gym));
-    } catch {}
+    this.safeSetItem(KEYS.MY_GYM, JSON.stringify(gym));
   }
 }

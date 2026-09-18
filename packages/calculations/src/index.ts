@@ -1,4 +1,4 @@
-import type { WorkoutSet, WorkoutExercise, WorkoutSession, PersonalRecord, RecordType, MuscleGroup } from '../../types/src/index.ts';
+import type { WorkoutSet, WorkoutExercise, WorkoutSession, PersonalRecord, RecordType } from '../../types/src/index.ts';
 
 /**
  * Calcula el 1RM estimado utilizando la fórmula de Epley:

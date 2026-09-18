@@ -31,12 +31,12 @@ export function RestTimerModal({
 
   // Intervalo de decremento
   useEffect(() => {
-    let timer: any = null;
+    let timer: ReturnType<typeof setInterval> | null = null;
     if (isOpen && isRunning && timeLeft > 0) {
       timer = setInterval(() => {
         setTimeLeft(prev => {
           if (prev <= 1) {
-            clearInterval(timer);
+            if (timer) clearInterval(timer);
             if (onTimerComplete) onTimerComplete();
             return 0;
           }
@@ -44,7 +44,9 @@ export function RestTimerModal({
         });
       }, 1000);
     }
-    return () => clearInterval(timer);
+    return () => {
+      if (timer) clearInterval(timer);
+    };
   }, [isOpen, isRunning, timeLeft, onTimerComplete]);
 
   // Soporte de accesibilidad: Cierre con tecla Escape
@@ -83,7 +85,7 @@ export function RestTimerModal({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-xs p-0 sm:p-4 animate-fade-in"
+      className="fixed inset-0 z-[70] flex items-end justify-center bg-black/40 backdrop-blur-xs p-0 sm:p-4 animate-fade-in"
     >
       <div
         onClick={(e) => e.stopPropagation()}

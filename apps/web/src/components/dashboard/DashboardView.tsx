@@ -9,13 +9,9 @@ import {
   TrendingUp, 
   Clock, 
   Calendar, 
-  ChevronRight, 
-  Scale, 
-  ArrowUpRight,
-  Sparkles,
-  ShieldCheck
+  Scale 
 } from 'lucide-react';
-import type { WorkoutSession } from '@gym/types';
+import type { WorkoutSession, RoutineExerciseItem } from '@gym/types';
 import { MuscleHeatmap } from './MuscleHeatmap';
 import { AppStorage, DEFAULT_ROUTINES } from '../../lib/storage';
 
@@ -59,7 +55,7 @@ export function DashboardView({ onStartWorkout, onNavigate }: DashboardViewProps
       durationSeconds: 0,
       totalVolumeKg: 0,
       status: 'in_progress',
-      exercises: day.exercises.map((item, idx) => ({
+      exercises: day.exercises.map((item: RoutineExerciseItem, idx: number) => ({
         id: 'we-' + idx + '-' + Date.now(),
         sessionId: 'session-' + Date.now(),
         exerciseId: item.exerciseId,
@@ -209,7 +205,7 @@ export function DashboardView({ onStartWorkout, onNavigate }: DashboardViewProps
             <select
               aria-label="Métrica de progreso a visualizar"
               value={progressMetric}
-              onChange={(e) => setProgressMetric(e.target.value as any)}
+              onChange={(e) => setProgressMetric(e.target.value as 'volume' | 'weight' | '1rm')}
               className="px-2.5 py-1 text-xs border border-gray-200 rounded-md font-medium text-brand-darkBlue bg-white outline-none"
             >
               <option value="volume">Volumen Total (kg)</option>

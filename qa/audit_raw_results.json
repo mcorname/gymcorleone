@@ -1,24 +1,25 @@
 {
-  "timestamp": "2026-09-17T22:27:24.475Z",
+  "timestamp": "2026-09-18T13:55:57.335Z",
   "environments": {
-    "prod": "https://gymcorleone-web.vercel.app/",
+    "prod": "http://localhost:3000/",
     "local": "http://localhost:3000/"
   },
   "networkHeaders": {
-    "access-control-allow-origin": "*",
-    "age": "8091",
-    "cache-control": "public, max-age=0, must-revalidate",
-    "content-disposition": "inline",
-    "content-encoding": "br",
+    "cache-control": "s-maxage=31536000, stale-while-revalidate",
+    "connection": "keep-alive",
+    "content-encoding": "gzip",
+    "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';",
     "content-type": "text/html; charset=utf-8",
-    "date": "Thu, 17 Sep 2026 22:27:24 GMT",
-    "etag": "W/\"586903c38d6ae8dfd89834bb2dc561ab\"",
-    "server": "Vercel",
-    "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
-    "vary": "RSC, Next-Router-State-Tree, Next-Router-Prefetch",
-    "x-matched-path": "/",
-    "x-vercel-cache": "HIT",
-    "x-vercel-id": "gru1::vfk7s-1789684044861-3e114f73b2a4"
+    "date": "Fri, 18 Sep 2026 13:55:57 GMT",
+    "etag": "\"yi6hd59agcv02\"",
+    "keep-alive": "timeout=5",
+    "permissions-policy": "camera=(self), microphone=(), geolocation=()",
+    "referrer-policy": "strict-origin-when-cross-origin",
+    "transfer-encoding": "chunked",
+    "vary": "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Accept-Encoding",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "x-nextjs-cache": "HIT"
   },
   "consoleLogs": [],
   "networkErrors": [],
@@ -352,11 +353,11 @@
   ],
   "performanceMetrics": {},
   "securityHeadersCheck": {
-    "content-security-policy": false,
-    "strict-transport-security": true,
-    "x-content-type-options": false,
-    "x-frame-options": false,
-    "referrer-policy": false,
-    "permissions-policy": false
+    "content-security-policy": true,
+    "strict-transport-security": false,
+    "x-content-type-options": true,
+    "x-frame-options": true,
+    "referrer-policy": true,
+    "permissions-policy": true
   }
 }

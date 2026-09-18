@@ -3,26 +3,19 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Search, 
-  Filter, 
   Dumbbell, 
-  Play, 
   X, 
   Plus, 
-  ExternalLink, 
   ChevronRight,
-  BookOpen,
-  Info
+  BookOpen
 } from 'lucide-react';
 import type { Exercise } from '@gym/types';
 import { 
   matchesExercise, 
   getExerciseDisplayName, 
-  getLocalizedSecondaryMuscles, 
-  getLocalizedTaxonomy,
-  BODY_PARTS_I18N,
-  EQUIPMENT_I18N,
-  TARGET_MUSCLES_I18N
+  getLocalizedTaxonomy 
 } from '@gym/i18n';
+import { ExerciseTechniqueModal } from './ExerciseTechniqueModal';
 
 interface ExerciseCatalogViewProps {
   onSelectExerciseForWorkout?: (exercise: Exercise) => void;
@@ -255,118 +248,16 @@ export function ExerciseCatalogView({ onSelectExerciseForWorkout }: ExerciseCata
         </>
       )}
 
-      {/* Modal de Detalle del Ejercicio con Pasos en Español */}
-      {activeExerciseDetail && (
-        <div
-          onClick={() => setActiveExerciseDetail(null)}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4 animate-fade-in"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-xl bg-white rounded-2xl p-6 shadow-modal max-h-[90vh] flex flex-col overflow-y-auto"
-          >
-            <div className="flex items-start justify-between pb-3 border-b border-gray-100">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-brand-blue">
-                  {getLocalizedTaxonomy('bodyParts', activeExerciseDetail.bodyPart, 'es')} • {getLocalizedTaxonomy('equipments', activeExerciseDetail.equipment, 'es')}
-                </span>
-                <h2 className="text-lg font-bold text-brand-darkBlue mt-0.5">
-                  {getExerciseDisplayName(activeExerciseDetail, 'es')}
-                </h2>
-                <div className="text-[11px] text-gray-400 mt-0.5 font-medium">
-                  Original: {activeExerciseDetail.name}
-                </div>
-
-                {activeExerciseDetail.aliases && activeExerciseDetail.aliases.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {activeExerciseDetail.aliases.slice(0, 4).map(alias => (
-                      <span key={alias} className="px-2 py-0.5 rounded-full bg-gray-100 text-[10px] text-gray-600 font-medium">
-                        {alias}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <button
-                onClick={() => setActiveExerciseDetail(null)}
-                className="p-1 rounded-md text-gray-400 hover:text-gray-600"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Multimedia (GIF o Imagen grande) */}
-            <div className="my-4 rounded-xl overflow-hidden bg-gray-50 border border-gray-200 flex items-center justify-center max-h-64">
-              <img
-                src={activeExerciseDetail.gifUrl || activeExerciseDetail.image}
-                alt={getExerciseDisplayName(activeExerciseDetail, 'es')}
-                className="max-h-64 object-contain"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = activeExerciseDetail.image;
-                }}
-              />
-            </div>
-
-            {/* Músculos Involucrados */}
-            <div className="grid grid-cols-2 gap-3 mb-4 text-xs">
-              <div className="p-3 rounded-lg bg-blue-50/60 border border-blue-100">
-                <span className="font-bold text-brand-blue block mb-0.5">Músculo Principal:</span>
-                <span className="capitalize font-semibold text-brand-darkBlue">
-                  {getLocalizedTaxonomy('targets', activeExerciseDetail.target, 'es')}
-                </span>
-              </div>
-              <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
-                <span className="font-bold text-gray-600 block mb-0.5">Músculos Secundarios:</span>
-                <span className="capitalize text-gray-700">
-                  {activeExerciseDetail.secondaryMuscles.length > 0 
-                    ? getLocalizedSecondaryMuscles(activeExerciseDetail.secondaryMuscles, 'es').join(' · ') 
-                    : 'Ninguno registrado'}
-                </span>
-              </div>
-            </div>
-
-            {/* Pasos de Ejecución Técnica en Español */}
-            <div className="mb-4">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-brand-textSecondary mb-2">
-                Instrucciones Paso a Paso:
-              </h4>
-              {activeExerciseDetail.instructionStepsEs && activeExerciseDetail.instructionStepsEs.length > 0 ? (
-                <ol className="space-y-2 text-xs text-gray-700 list-decimal list-inside bg-gray-50 p-3 rounded-xl border border-gray-100">
-                  {activeExerciseDetail.instructionStepsEs.map((step, idx) => (
-                    <li key={idx} className="leading-relaxed pl-1">{step}</li>
-                  ))}
-                </ol>
-              ) : (
-                <p className="text-xs text-gray-600 italic">
-                  {activeExerciseDetail.instructionsEs?.[0] || 'Realiza el movimiento controlando la fase excéntrica y concéntrica.'}
-                </p>
-              )}
-            </div>
-
-            <div className="flex items-center gap-3 pt-3 border-t border-gray-100">
-              <button
-                onClick={() => setActiveExerciseDetail(null)}
-                className="flex-1 py-2.5 rounded-lg border border-gray-300 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
-              >
-                Cerrar
-              </button>
-              {onSelectExerciseForWorkout && (
-                <button
-                  onClick={() => {
-                    onSelectExerciseForWorkout(activeExerciseDetail);
-                    setActiveExerciseDetail(null);
-                    alert(`¡"${getExerciseDisplayName(activeExerciseDetail, 'es')}" agregado a tu sesión activa!`);
-                  }}
-                  className="flex-1 py-2.5 rounded-lg bg-brand-blue hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition-colors flex items-center justify-center gap-1.5"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>Agregar al Entrenamiento</span>
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Modal Reutilizable de Técnica y Pasos */}
+      <ExerciseTechniqueModal
+        exercise={activeExerciseDetail}
+        isOpen={!!activeExerciseDetail}
+        onClose={() => setActiveExerciseDetail(null)}
+        onSelectForWorkout={onSelectExerciseForWorkout ? (ex) => {
+          onSelectExerciseForWorkout(ex);
+          alert(`¡"${getExerciseDisplayName(ex, 'es')}" agregado a tu sesión activa!`);
+        } : undefined}
+      />
     </div>
   );
 }

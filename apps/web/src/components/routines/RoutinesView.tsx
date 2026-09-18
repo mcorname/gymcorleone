@@ -3,19 +3,12 @@
 import React, { useState } from 'react';
 import { 
   ClipboardList, 
-  Plus, 
   Play, 
-  Copy, 
-  Trash2, 
-  ChevronRight, 
-  Clock, 
-  Repeat, 
-  Dumbbell,
-  Sparkles
+  Copy 
 } from 'lucide-react';
-import type { Routine, RoutineDay, WorkoutSession, WorkoutExercise } from '@gym/types';
+import type { Routine, RoutineDay, WorkoutSession } from '@gym/types';
 import { getExerciseDisplayName, getLocalizedTaxonomy } from '@gym/i18n';
-import { AppStorage, DEFAULT_ROUTINES } from '../../lib/storage';
+import { AppStorage } from '../../lib/storage';
 
 interface RoutinesViewProps {
   onStartRoutine: (session: WorkoutSession) => void;

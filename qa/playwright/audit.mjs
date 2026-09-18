@@ -10,8 +10,8 @@ const QA_DIR = path.join(__dirname, '..');
 const SCREENSHOTS_DIR = path.join(QA_DIR, 'screenshots');
 const RESULTS_FILE = path.join(QA_DIR, 'audit_raw_results.json');
 
-const PROD_URL = 'https://gymcorleone-web.vercel.app/';
 const LOCAL_URL = 'http://localhost:3000/';
+const PROD_URL = LOCAL_URL;
 
 // Viewports requeridos para responsive QA
 const VIEWPORTS = [

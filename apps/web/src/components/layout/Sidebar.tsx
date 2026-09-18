@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import { 
@@ -10,7 +10,6 @@ import {
   Building2, 
   TrendingUp, 
   Trophy, 
-  Settings,
   Flame
 } from 'lucide-react';
 

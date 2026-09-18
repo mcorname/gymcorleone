@@ -25,29 +25,29 @@ export function Navbar({
     switch (syncStatus) {
       case 'offline':
         return (
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-xs font-medium">
+          <div className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-xs font-medium">
             <CloudOff className="w-3.5 h-3.5 text-amber-600" />
-            <span>Sin conexión (Modo local seguro)</span>
+            <span className="hidden sm:inline">Sin conexión</span>
           </div>
         );
       case 'syncing':
         return (
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-medium">
+          <div className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-medium">
             <RefreshCw className="w-3.5 h-3.5 text-blue-600 animate-spin" />
-            <span>Sincronizando...</span>
+            <span className="hidden sm:inline">Sincronizando...</span>
           </div>
         );
       case 'saved_local':
         return (
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-medium">
+          <div className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-medium">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Guardado en dispositivo</span>
+            <span className="hidden sm:inline">Guardado</span>
           </div>
         );
       case 'synced':
       default:
         return (
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-medium">
+          <div className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-medium">
             <Cloud className="w-3.5 h-3.5 text-emerald-600" />
             <span className="hidden sm:inline">Sincronizado</span>
           </div>
@@ -83,12 +83,12 @@ export function Navbar({
       </div>
 
       {/* Acciones del Topbar */}
-      <div className="flex items-center gap-3">
-        {/* Banner o botón rápido de entrenamiento en curso */}
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        {/* Banner o botón rápido de entrenamiento en curso (en móvil el BottomNav ya tiene el botón Activo destacado) */}
         {hasActiveWorkout && (
           <button
             onClick={onOpenActiveWorkout}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#D83B01] text-white text-xs font-semibold shadow-sm hover:bg-[#b83200] transition-colors animate-pulse"
+            className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#D83B01] text-white text-xs font-semibold shadow-sm hover:bg-[#b83200] transition-colors animate-pulse"
           >
             <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
             <span>Entrenamiento en Vivo</span>
@@ -100,7 +100,7 @@ export function Navbar({
 
         {/* Indicador de Idioma / Localización Activa */}
         <div 
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50/80 border border-blue-200 text-xs font-bold text-brand-darkBlue shadow-xs"
+          className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50/80 border border-blue-200 text-xs font-bold text-brand-darkBlue shadow-xs"
           title="Idioma activo: Español Neutral Fitness"
         >
           <span className="text-[12px] leading-none">🇪🇸</span>
@@ -108,7 +108,7 @@ export function Navbar({
         </div>
 
         {/* Perfil Mario */}
-        <div className="flex items-center gap-2 pl-2 border-l border-gray-200">
+        <div className="flex items-center gap-2 pl-1.5 sm:pl-2 border-l border-gray-200">
           <div className="w-8 h-8 rounded-full bg-brand-blue text-white flex items-center justify-center font-bold text-xs shadow-sm">
             MC
           </div>

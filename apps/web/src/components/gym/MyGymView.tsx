@@ -2,16 +2,15 @@
 
 import React, { useState } from 'react';
 import { 
-  Building2, 
+  Building2,
+  Scan,
+  Check,
   Plus, 
-  Check, 
   ShieldCheck, 
   Sparkles, 
-  Scan, 
   Dumbbell, 
   Filter,
-  CheckCircle2,
-  Trash2
+  CheckCircle2
 } from 'lucide-react';
 import type { Gym, GymEquipmentItem, Machine } from '@gym/types';
 import { CANONICAL_MACHINES } from '@gym/ai';

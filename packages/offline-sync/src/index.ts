@@ -1,11 +1,11 @@
 export type SyncStatus = 'saved_local' | 'syncing' | 'synced' | 'offline';
 
-export interface QueuedMutation {
+export interface QueuedMutation<T = unknown> {
   id: string;
   clientTimestamp: string;
   entityType: 'workout_set' | 'workout_session' | 'routine' | 'body_measurement' | 'gym_equipment';
   operation: 'insert' | 'update' | 'delete';
-  payload: any;
+  payload: T;
   status: 'pending' | 'syncing' | 'synced' | 'error';
   retryCount: number;
 }
@@ -62,13 +62,16 @@ export class OfflineSyncManager {
     }
   }
 
-  public enqueueMutation(
+  public enqueueMutation<T = unknown>(
     entityType: QueuedMutation['entityType'],
     operation: QueuedMutation['operation'],
-    payload: any
-  ): QueuedMutation {
-    const mutation: QueuedMutation = {
-      id: 'mut_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now(),
+    payload: T
+  ): QueuedMutation<T> {
+    const randomId = typeof crypto !== 'undefined' && crypto.randomUUID
+      ? crypto.randomUUID()
+      : Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+    const mutation: QueuedMutation<T> = {
+      id: `mut_${randomId}`,
       clientTimestamp: new Date().toISOString(),
       entityType,
       operation,
