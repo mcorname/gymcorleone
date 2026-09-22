@@ -672,7 +672,7 @@ export function ActiveWorkoutView({
                       <button
                         type="button"
                         onClick={() => setSelectedTechniqueExercise(exItem.exercise)}
-                        className="w-12 h-12 rounded-xl overflow-hidden bg-gray-50 border border-gray-200 shrink-0 relative group hover:ring-2 hover:ring-brand-blue transition-all"
+                        className="w-18 h-18 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-slate-50 border border-gray-200 shrink-0 relative group hover:ring-2 hover:ring-brand-blue transition-all"
                         title="Ver técnica y pasos"
                         aria-label={`Ver técnica de ${getExerciseDisplayName(exItem.exercise, 'es')}`}
                       >
@@ -680,7 +680,8 @@ export function ActiveWorkoutView({
                           <img
                             src={exItem.exercise.image}
                             alt={getExerciseDisplayName(exItem.exercise, 'es')}
-                            className="w-full h-full object-cover"
+                            loading="lazy"
+                            className="w-full h-full object-contain p-0.5"
                             onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
                           />
                         ) : (
@@ -799,7 +800,7 @@ export function ActiveWorkoutView({
                     <button
                       type="button"
                       onClick={() => setSelectedTechniqueExercise(exItem.exercise)}
-                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden bg-gray-50 border border-gray-200 shrink-0 relative group hover:ring-2 hover:ring-brand-blue transition-all"
+                      className="w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden bg-slate-50 border border-gray-200 shrink-0 relative group hover:ring-2 hover:ring-brand-blue transition-all"
                       title="Ver técnica y pasos"
                       aria-label={`Ver técnica y pasos de ${getExerciseDisplayName(exItem.exercise, 'es')}`}
                     >
@@ -807,7 +808,8 @@ export function ActiveWorkoutView({
                         <img
                           src={exItem.exercise.image}
                           alt={getExerciseDisplayName(exItem.exercise, 'es')}
-                          className="w-full h-full object-cover"
+                          loading="lazy"
+                          className="w-full h-full object-contain p-0.5"
                           onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
                         />
                       ) : (
@@ -816,7 +818,7 @@ export function ActiveWorkoutView({
                         </div>
                       )}
                       <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                        <BookOpen className="w-4 h-4 text-white drop-shadow" />
+                        <BookOpen className="w-5 h-5 text-white drop-shadow" />
                       </div>
                     </button>
 
@@ -1311,7 +1313,8 @@ export function ActiveWorkoutView({
                         <img
                           src={ex.image}
                           alt={getExerciseDisplayName(ex, 'es')}
-                          className="w-10 h-10 rounded-md object-cover bg-gray-50 border border-gray-200 shrink-0"
+                          loading="lazy"
+                          className="w-16 h-16 sm:w-18 sm:h-18 rounded-lg object-contain bg-slate-50 border border-gray-200 p-0.5 shrink-0"
                           onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
                         />
                       )}

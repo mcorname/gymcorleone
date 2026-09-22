@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Navbar } from '../components/layout/Navbar';
 import { Sidebar } from '../components/layout/Sidebar';
 import { BottomNav } from '../components/layout/BottomNav';
@@ -12,45 +12,84 @@ import { ExerciseCatalogView } from '../components/exercises/ExerciseCatalogView
 import { MachineScannerView } from '../components/machines/MachineScannerView';
 import { MyGymView } from '../components/gym/MyGymView';
 import { ProgressView } from '../components/progress/ProgressView';
+import { AuthView } from '../components/auth/AuthView';
+import { UserProfileModal } from '../components/profile/UserProfileModal';
 
-import type { WorkoutSession, Exercise } from '@gym/types';
+import type { WorkoutSession, Exercise, User } from '@gym/types';
 import type { SyncStatus } from '@gym/offline-sync';
 import { syncManager } from '@gym/offline-sync';
 import { AppStorage } from '../lib/storage';
 import { Dumbbell, ArrowRight } from 'lucide-react';
 
 export default function HomePage() {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isInitializing, setIsInitializing] = useState<boolean>(true);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
+
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('synced');
   const [activeSession, setActiveSession] = useState<WorkoutSession | null>(null);
   const [draftSession, setDraftSession] = useState<WorkoutSession | null>(null);
   const [gymName, setGymName] = useState<string>('SmartFit Centro');
 
-  useEffect(() => {
-    // Suscribirse al gestor de sincronización offline
-    const unsubscribe = syncManager.subscribeStatus(status => {
-      setSyncStatus(status);
-    });
-
+  const loadUserData = useCallback(() => {
     // Cargar sesión activa sólo si existe y está en curso
     const savedActive = AppStorage.getActiveSession();
     if (savedActive && savedActive.status === 'in_progress' && savedActive.startedAt) {
       setActiveSession(savedActive);
+    } else {
+      setActiveSession(null);
     }
 
     // Cargar borrador de preparación si existe
     const savedDraft = AppStorage.getDraftWorkout();
-    if (savedDraft) {
-      setDraftSession(savedDraft);
-    }
+    setDraftSession(savedDraft || null);
 
     const currentGym = AppStorage.getMyGym();
     if (currentGym?.name) {
       setGymName(currentGym.name);
     }
+  }, []);
+
+  useEffect(() => {
+    // 1. Cargar usuario actual desde storage
+    const user = AppStorage.getCurrentUser();
+    setCurrentUser(user);
+
+    // 2. Suscribirse al gestor de sincronización offline
+    const unsubscribe = syncManager.subscribeStatus(status => {
+      setSyncStatus(status);
+    });
+
+    if (user && user.status === 'ACTIVE') {
+      loadUserData();
+    }
+
+    setIsInitializing(false);
 
     return () => unsubscribe();
-  }, []);
+  }, [loadUserData]);
+
+  const handleAuthSuccess = (user: User) => {
+    setCurrentUser(user);
+    if (user.status === 'ACTIVE') {
+      loadUserData();
+    }
+  };
+
+  const handleActivationSuccess = (user: User) => {
+    setCurrentUser(user);
+    loadUserData();
+  };
+
+  const handleLogout = () => {
+    AppStorage.logout();
+    setCurrentUser(null);
+    setActiveSession(null);
+    setDraftSession(null);
+    setActiveTab('dashboard');
+    setIsProfileModalOpen(false);
+  };
 
   // Determinar si hay un entrenamiento activo real en curso
   const hasActiveWorkout = !!activeSession && activeSession.status === 'in_progress' && !!activeSession.startedAt;
@@ -196,6 +235,32 @@ export default function HomePage() {
     }
   };
 
+  if (isInitializing) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-12 h-12 rounded-2xl bg-brand-blue flex items-center justify-center animate-pulse">
+            <Dumbbell className="w-7 h-7 text-white" />
+          </div>
+          <span className="text-xs font-semibold text-slate-400">Cargando GYM PROGRESS...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Si no está autenticado o tiene acceso pendiente, mostrar AuthView
+  if (!currentUser || currentUser.status === 'PENDING_ACCESS') {
+    return (
+      <AuthView
+        initialMode={currentUser?.status === 'PENDING_ACCESS' ? 'activate' : 'login'}
+        currentUser={currentUser}
+        onAuthSuccess={handleAuthSuccess}
+        onActivationSuccess={handleActivationSuccess}
+        onLogout={handleLogout}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-brand-bg">
       {/* Top Navbar */}
@@ -212,6 +277,9 @@ export default function HomePage() {
         gymName={gymName}
         hasActiveWorkout={hasActiveWorkout}
         onOpenActiveWorkout={() => setActiveTab('workout')}
+        currentUser={currentUser}
+        onOpenProfile={() => setIsProfileModalOpen(true)}
+        onLogout={handleLogout}
       />
 
       <div className="flex flex-1">
@@ -226,6 +294,7 @@ export default function HomePage() {
             }
           }}
           hasActiveWorkout={hasActiveWorkout}
+          onOpenProfile={() => setIsProfileModalOpen(true)}
         />
 
         {/* Contenido Central */}
@@ -319,6 +388,19 @@ export default function HomePage() {
         }}
         hasActiveWorkout={hasActiveWorkout}
       />
+
+      {/* Modal de Perfil de Usuario */}
+      {currentUser && (
+        <UserProfileModal
+          isOpen={isProfileModalOpen}
+          onClose={() => setIsProfileModalOpen(false)}
+          currentUser={currentUser}
+          onUserUpdated={(updatedUser) => {
+            setCurrentUser(updatedUser);
+          }}
+          onLogout={handleLogout}
+        />
+      )}
     </div>
   );
 }

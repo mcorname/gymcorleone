@@ -10,16 +10,18 @@ import {
   Building2, 
   TrendingUp, 
   Trophy, 
-  Flame
+  Flame,
+  User as UserIcon
 } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
   onNavigate: (tab: string) => void;
   hasActiveWorkout: boolean;
+  onOpenProfile?: () => void;
 }
 
-export function Sidebar({ activeTab, onNavigate, hasActiveWorkout }: SidebarProps) {
+export function Sidebar({ activeTab, onNavigate, hasActiveWorkout, onOpenProfile }: SidebarProps) {
   const menuItems = [
     { id: 'dashboard', label: 'Inicio', icon: LayoutDashboard },
     { id: 'workout', label: 'Entrenar', icon: Dumbbell, highlight: true },
@@ -89,6 +91,16 @@ export function Sidebar({ activeTab, onNavigate, hasActiveWorkout }: SidebarProp
             Has entrenado 4 de tus 5 días objetivo de esta semana.
           </p>
         </div>
+
+        {onOpenProfile && (
+          <button
+            onClick={onOpenProfile}
+            className="mt-3 w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-semibold text-brand-darkBlue bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors"
+          >
+            <UserIcon className="w-3.5 h-3.5 text-brand-blue" />
+            <span>Mi Perfil & Medidas</span>
+          </button>
+        )}
       </div>
     </aside>
   );

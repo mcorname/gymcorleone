@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Dumbbell, Cloud, CloudOff, RefreshCw, CheckCircle2, Shield } from 'lucide-react';
+import { Dumbbell, Cloud, CloudOff, RefreshCw, CheckCircle2, Shield, User as UserIcon } from 'lucide-react';
 import type { SyncStatus } from '@gym/offline-sync';
+import type { User } from '@gym/types';
 
 interface NavbarProps {
   activeTab: string;
@@ -11,6 +12,9 @@ interface NavbarProps {
   gymName: string;
   hasActiveWorkout: boolean;
   onOpenActiveWorkout: () => void;
+  currentUser?: User | null;
+  onOpenProfile?: () => void;
+  onLogout?: () => void;
 }
 
 export function Navbar({
@@ -19,7 +23,10 @@ export function Navbar({
   syncStatus,
   gymName,
   hasActiveWorkout,
-  onOpenActiveWorkout
+  onOpenActiveWorkout,
+  currentUser,
+  onOpenProfile,
+  onLogout
 }: NavbarProps) {
   const getSyncBadge = () => {
     switch (syncStatus) {
@@ -107,16 +114,27 @@ export function Navbar({
           <span className="text-[11px] tracking-wide text-brand-blue font-black">ES</span>
         </div>
 
-        {/* Perfil Mario */}
-        <div className="flex items-center gap-2 pl-1.5 sm:pl-2 border-l border-gray-200">
-          <div className="w-8 h-8 rounded-full bg-brand-blue text-white flex items-center justify-center font-bold text-xs shadow-sm">
-            MC
+        {/* Perfil de Usuario */}
+        <button
+          onClick={onOpenProfile}
+          className="flex items-center gap-2 pl-1.5 sm:pl-2 border-l border-gray-200 hover:opacity-80 transition-opacity text-left group"
+          title="Ver y editar Mi Perfil"
+          aria-label="Abrir perfil de usuario"
+        >
+          <div className="w-8 h-8 rounded-full bg-brand-blue text-white flex items-center justify-center font-bold text-xs shadow-sm group-hover:ring-2 group-hover:ring-blue-300 transition-all">
+            {currentUser?.name
+              ? currentUser.name.split(' ').map(p => p[0]).slice(0, 2).join('').toUpperCase()
+              : 'MC'}
           </div>
           <div className="hidden xl:block text-left text-xs">
-            <div className="font-semibold text-brand-textPrimary leading-none">Mario Castro</div>
-            <div className="text-[10px] text-brand-textSecondary mt-0.5">Nivel Intermedio</div>
+            <div className="font-semibold text-brand-textPrimary leading-none truncate max-w-[120px]">
+              {currentUser?.name || 'Mario Castro'}
+            </div>
+            <div className="text-[10px] text-brand-textSecondary mt-0.5 capitalize">
+              {currentUser?.level || 'Intermedio'}
+            </div>
           </div>
-        </div>
+        </button>
       </div>
     </header>
   );

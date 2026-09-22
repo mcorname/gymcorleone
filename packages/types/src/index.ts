@@ -159,6 +159,7 @@ export interface Routine {
 
 export interface BodyMeasurement {
   id: string;
+  userId?: string;
   measuredAt: string;
   weightKg: number;
   heightCm?: number;
@@ -211,6 +212,7 @@ export interface GymEquipmentItem {
 
 export interface Gym {
   id: string;
+  userId?: string;
   name: string;
   isActive: boolean;
   equipment: GymEquipmentItem[];
@@ -237,4 +239,52 @@ export interface AIScanResult {
   };
   commonMistakes: string[];
   safetyNotes: string[];
+}
+
+// ============================================================================
+// MODELOS DE USUARIO, AUTENTICACIÓN Y CÓDIGOS DE ACCESO / INVITACIÓN
+// ============================================================================
+
+export type UserStatus = 'PENDING_ACCESS' | 'ACTIVE' | 'SUSPENDED';
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  passwordHash: string;
+  salt: string;
+  status: UserStatus;
+  accessCodeId?: string;
+  createdAt: string;
+  updatedAt?: string;
+  photoUrl?: string;
+  heightCm?: number;
+  weightKg?: number;
+  bodyFatPercentage?: number;
+  targetGoal?: string;
+  level?: string;
+  unitSystem?: 'metric' | 'imperial';
+  notes?: string;
+}
+
+export type AccessCodeStatus = 'ACTIVE' | 'USED' | 'REVOKED' | 'EXPIRED';
+
+export interface AccessCode {
+  id: string;
+  codeHash: string;
+  codeHint?: string;
+  status: AccessCodeStatus;
+  createdAt: string;
+  expiresAt: string | null;
+  usedAt: string | null;
+  usedByUserId: string | null;
+  usedByUserName?: string | null;
+  createdBy: string;
+  notes?: string;
+}
+
+export interface AuthSession {
+  userId: string;
+  token: string;
+  expiresAt: string;
 }

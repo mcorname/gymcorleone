@@ -62,7 +62,7 @@ export function ExerciseTechniqueModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-h-[90vh] sm:max-w-xl bg-white rounded-t-2xl sm:rounded-2xl p-5 sm:p-6 shadow-modal flex flex-col overflow-y-auto pb-8 sm:pb-6"
+        className="w-full max-h-[92vh] sm:max-w-2xl bg-white rounded-t-2xl sm:rounded-2xl p-5 sm:p-6 shadow-modal flex flex-col overflow-y-auto pb-8 sm:pb-6"
       >
         {/* Manilla táctil en móvil */}
         <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-3 sm:hidden" />
@@ -105,12 +105,12 @@ export function ExerciseTechniqueModal({
         </div>
 
         {/* Multimedia: GIF animado o imagen con relación de aspecto correcta */}
-        <div className="my-4 rounded-xl overflow-hidden bg-gray-50 border border-gray-200 flex items-center justify-center min-h-[180px] max-h-64">
+        <div className="my-4 rounded-xl overflow-hidden bg-slate-900/5 border border-gray-200 flex items-center justify-center min-h-[260px] sm:min-h-[340px] max-h-[460px] p-2">
           {exercise.gifUrl || exercise.image ? (
             <img
               src={exercise.gifUrl || exercise.image}
               alt={`Demostración técnica de ${displayName}`}
-              className="max-h-64 w-auto object-contain mx-auto"
+              className="max-h-[360px] sm:max-h-[440px] w-full object-contain mx-auto rounded-lg"
               loading="lazy"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;

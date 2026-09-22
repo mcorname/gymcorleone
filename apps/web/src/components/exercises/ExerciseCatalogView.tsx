@@ -182,40 +182,41 @@ export function ExerciseCatalogView({ onSelectExerciseForWorkout }: ExerciseCata
                 onClick={() => setActiveExerciseDetail(ex)}
                 className="bg-white rounded-xl border border-brand-border p-4 hover:border-brand-blue hover:shadow-card cursor-pointer transition-all flex flex-col justify-between"
               >
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-3.5">
                   {ex.image ? (
                     <img
                       src={ex.image}
                       alt={ex.nameEs || ex.name}
-                      className="w-14 h-14 rounded-lg object-cover bg-gray-50 border border-gray-200 shrink-0"
+                      loading="lazy"
+                      className="w-20 h-20 sm:w-[88px] sm:h-[88px] lg:w-24 lg:h-24 rounded-xl object-contain bg-slate-50 border border-gray-200 p-1 shrink-0"
                       onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
                     />
                   ) : (
-                    <div className="w-14 h-14 rounded-lg bg-blue-50 text-brand-blue flex items-center justify-center font-bold text-sm shrink-0">
-                      <Dumbbell className="w-6 h-6" />
+                    <div className="w-20 h-20 sm:w-[88px] sm:h-[88px] lg:w-24 lg:h-24 rounded-xl bg-blue-50 text-brand-blue flex items-center justify-center font-bold text-sm shrink-0 border border-blue-100">
+                      <Dumbbell className="w-8 h-8" />
                     </div>
                   )}
 
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-xs font-bold text-brand-textPrimary truncate">
+                    <h3 className="text-sm font-bold text-brand-textPrimary line-clamp-2">
                       {getExerciseDisplayName(ex, 'es')}
                     </h3>
-                    <div className="flex items-center gap-1.5 text-[11px] text-brand-textSecondary mt-1">
-                      <span className="capitalize font-medium text-brand-blue">
+                    <div className="flex items-center gap-1.5 text-xs text-brand-textSecondary mt-1">
+                      <span className="capitalize font-semibold text-brand-blue">
                         {getLocalizedTaxonomy('bodyParts', ex.bodyPart, 'es')}
                       </span>
                       <span>•</span>
                       <span className="truncate">{getLocalizedTaxonomy('equipments', ex.equipment, 'es')}</span>
                     </div>
-                    <div className="text-[10px] text-gray-500 mt-1 capitalize">
+                    <div className="text-[11px] text-gray-500 mt-1 capitalize">
                       Objetivo: <strong className="text-gray-700">{getLocalizedTaxonomy('targets', ex.target, 'es')}</strong>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-3 pt-2.5 border-t border-gray-100 flex items-center justify-between text-[11px]">
+                <div className="mt-3 pt-2.5 border-t border-gray-100 flex items-center justify-between text-xs">
                   <span className="text-brand-blue font-medium flex items-center gap-1">
-                    Ver técnica y pasos <ChevronRight className="w-3 h-3" />
+                    Ver técnica y pasos <ChevronRight className="w-3.5 h-3.5" />
                   </span>
                   {onSelectExerciseForWorkout && (
                     <button
@@ -224,7 +225,7 @@ export function ExerciseCatalogView({ onSelectExerciseForWorkout }: ExerciseCata
                         onSelectExerciseForWorkout(ex);
                         alert(`¡"${getExerciseDisplayName(ex, 'es')}" agregado a tu entrenamiento activo!`);
                       }}
-                      className="px-2 py-1 bg-blue-50 hover:bg-blue-100 text-brand-blue font-bold rounded"
+                      className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-brand-blue font-bold rounded-lg text-xs transition-colors"
                     >
                       + Entrenar
                     </button>

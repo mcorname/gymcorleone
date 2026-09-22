@@ -370,7 +370,8 @@ export function MachineScannerView({
                       <img
                         src={ex.image}
                         alt={getExerciseDisplayName(ex, 'es')}
-                        className="w-11 h-11 rounded-md object-cover bg-gray-50 border border-gray-200"
+                        loading="lazy"
+                        className="w-16 h-16 rounded-xl object-contain bg-slate-50 border border-gray-200 p-0.5 shrink-0"
                         onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
                       />
                     )}
